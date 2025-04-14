@@ -1,0 +1,45 @@
+from django.db import models
+from django.contrib.auth.models import User
+from books.models import Book
+
+class Order(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    order_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    total_amount_cents = models.IntegerField()
+    shipping_address = models.CharField(max_length=255)
+    shipping_city = models.CharField(max_length=100)
+    shipping_postal_code = models.CharField(max_length=20)
+    payment_method = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return f"Order {self.id} by {self.user.username} on {self.order_date.strftime('%Y-%m-%d')}"
+    
+    def formatted_total(self):
+        return f"€{self.total_amount_cents/100:.2f}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    price_at_order_cents = models.IntegerField()
+    
+    def __str__(self):
+        return f"{self.quantity}x {self.book.title} in Order {self.order.id}"
+    
+    def line_total_cents(self):
+        return self.quantity * self.price_at_order_cents
+        
+    def formatted_price(self):
+        return f"€{self.price_at_order_cents/100:.2f}"
+        
+    def formatted_line_total(self):
+        return f"€{self.line_total_cents()/100:.2f}"
