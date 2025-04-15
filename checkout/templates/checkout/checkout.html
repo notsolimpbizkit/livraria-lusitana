@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - Livraria Lusitana{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Finalizar Compra</h2>
+  
+  <div class="row">
+    <div class="col-md-7">
+      <form id="checkout-form" action="{% url 'process_order' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="cart_items" id="cart-items-input">
+        
+        <div class="mb-3">
+          <label class="form-label">Nome Completo</label>
+          <input type="text" class="form-control" name="name" value="{{ user.get_full_name }}" required>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Endereço</label>
+          <input type="text" class="form-control" name="address" value="{{ user.profile.address }}" required>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Cidade</label>
+            <input type="text" class="form-control" name="city" value="{{ user.profile.city }}" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Código Postal</label>
+            <input type="text" class="form-control" name="postal_code" value="{{ user.profile.postal_code }}" required>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Método de Pagamento</label>
+          <select class="form-select" name="payment_method">
+            <option>Cartão de Crédito</option>
+            <option>MBWay</option>
+            <option>Referência Multibanco</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn btn-success">Confirmar Pedido</button>
+      </form>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Resumo do Pedido</h4>
+        </div>
+        <ul class="list-group list-group-flush js-checkout-summary">
+          <!-- Will be filled by JavaScript -->
+          <li class="list-group-item text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Carregando itens do carrinho...</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+   
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module">
+  import { formatPrice } from '{% static "js/utils/cart-utils.js" %}';
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get cart items from localStorage
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Store cart in hidden field for form submission
+    document.getElementById('cart-items-input').value = JSON.stringify(cart);
+    
+    // Fetch book details for cart items
+    fetch('{% url "api_cart_items" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ items: cart })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.items && data.items.length > 0) {
+        // Render cart items
+        let checkoutHtml = '';
+        
+        data.items.forEach(item => {
+          checkoutHtml += `
+            <li class="list-group-item d-flex justify-content-between">
+              <div>
+                <span>${item.title}</span>
+                <small class="text-muted d-block">Quantidade: ${item.quantity}</small>
+              </div>
+              <strong>${formatPrice(item.subtotal_cents)}</strong>
+            </li>
+          `;
+        });
+        
+        // Add total
+        checkoutHtml += `
+          <li class="list-group-item d-flex justify-content-between bg-light">
+            <span><strong>Total:</strong></span>
+            <strong>${data.formatted_total}</strong>
+          </li>
+        `;
+        
+        document.querySelector('.js-checkout-summary').innerHTML = checkoutHtml;
+      } else {
+        // Empty cart
+        document.querySelector('.js-checkout-summary').innerHTML = `
+          <li class="list-group-item text-center py-5">
+            <p>Seu carrinho está vazio</p>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-3">Continuar Comprando</a>
+          </li>
+        `;
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.querySelector('.js-checkout-summary').innerHTML = `
+        <li class="list-group-item text-center py-5">
+          <p class="text-danger">Erro ao carregar itens do carrinho</p>
+          <a href="{% url 'home' %}" class="btn btn-primary mt-3">Voltar para a Loja</a>
+        </li>
+      `;
+    });
+    
+    // Handle form submission
+    document.getElementById('checkout-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const submitButton = this.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...';
+      
+      // Submit form data
+      const formData = new FormData(this);
+      
+      fetch(this.action, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Clear cart
+          localStorage.removeItem('cart');
+          
+          // Redirect to confirmation page
+          window.location.href = data.redirect_url;
+        } else {
+          alert('Erro: ' + data.error);
+          submitButton.disabled = false;
+          submitButton.textContent = 'Confirmar Pedido';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Ocorreu um erro ao processar o pedido. Tente novamente.');
+        submitButton.disabled = false;
+        submitButton.textContent = 'Confirmar Pedido';
+      });
+    });
+  });
+</script>
+{% endblock %}

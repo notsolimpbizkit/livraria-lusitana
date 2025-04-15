@@ -1,0 +1,14 @@
+.essentials{
+    width: 150px;
+    height: auto;
+}
+
+.card {
+    width: 160px;  /* Slightly larger than the image */
+    text-align: center;
+    border: none;
+}
+
+.card-body {
+    font-size: 14px; /* Smaller text to avoid big cards */
+}
