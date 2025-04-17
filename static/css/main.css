@@ -12,3 +12,31 @@
 .card-body {
     font-size: 14px; /* Smaller text to avoid big cards */
 }
+
+/* Book styling */
+.book-cover {
+    height: 250px;
+    object-fit: cover;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  
+  /* Rating stars */
+  .ratings {
+    font-size: 0.9rem;
+  }
+  
+  /* Filter sidebar */
+  @media (max-width: 992px) {
+    .filter-sidebar {
+      margin-bottom: 2rem;
+    }
+  }

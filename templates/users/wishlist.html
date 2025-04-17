@@ -1,0 +1,48 @@
+<!-- templates/users/wishlist.html -->
+{% extends 'base.html' %}
+
+{% block title %}Lista de Desejos - Livraria Lusitana{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Minha Lista de Desejos</h2>
+  
+  {% if user.wishlist_items.all %}
+  <div class="row">
+    {% for item in user.wishlist_items.all %}
+    <div class="col-md-3 mb-4">
+      <div class="card">
+        <a href="{% url 'book_detail' item.book.id %}">
+          <img src="{{ item.book.image.url }}" class="card-img-top" alt="{{ item.book.title }}">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">{{ item.book.title }}</h5>
+          <p class="card-text">{{ item.book.formatted_price }}</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-sm btn-primary js-add-to-cart" data-book-id="{{ item.book.id }}">
+              Adicionar ao Carrinho
+            </button>
+            <form method="post" action="{% url 'remove_from_wishlist' item.book.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <i class="bi bi-heart display-1 text-muted"></i>
+      <h4 class="mt-3">Sua lista de desejos está vazia</h4>
+      <p>Marque os livros que você gosta como favoritos para adicioná-los à sua lista de desejos.</p>
+      <a href="{% url 'book_list' %}" class="btn btn-primary mt-3">Explorar Livros</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

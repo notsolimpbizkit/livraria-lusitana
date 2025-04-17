@@ -37,6 +37,15 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Inside the navbar, before the nav items -->
+                <form class="d-flex mx-auto" action="{% url 'search_books' %}" method="get">
+                    <div class="input-group" style="max-width: 500px;">
+                    <input class="form-control" type="search" name="q" placeholder="Buscar livros, autores..." aria-label="Search" value="{{ query|default:'' }}">
+                    <button class="btn btn-outline-light" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    </div>
+                </form>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'book_list' %}">Livros</a></li>
@@ -73,8 +82,23 @@
             </div>
         </div>
     </nav>
+    
+    {% if categories %}
+    {% include 'components/category_nav.html' %}
+    {% endif %}
 
-    {% block content %}{% endblock %}
+    {% block content %}
+        {% if messages %}
+            <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endblock %}
 
     <!-- Footer -->
     <footer class="footer mt-5">

@@ -1,0 +1,16 @@
+<!-- templates/registration/logged_out.html -->
+{% extends 'base.html' %}
+
+{% block title %}Saiu - Livraria Lusitana{% endblock %}
+
+{% block content %}
+<div class="container my-5 text-center">
+  <i class="bi bi-box-arrow-right display-1 text-muted"></i>
+  <h2 class="mt-4">Você saiu da sua conta</h2>
+  <p class="lead">Obrigado por visitar a Livraria Lusitana.</p>
+  <div class="mt-4">
+    <a href="{% url 'login' %}" class="btn btn-primary">Entrar Novamente</a>
+    <a href="{% url 'home' %}" class="btn btn-outline-primary ms-2">Voltar para a Loja</a>
+  </div>
+</div>
+{% endblock %}

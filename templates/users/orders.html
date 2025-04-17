@@ -1,0 +1,52 @@
+<!-- templates/users/orders.html -->
+{% extends 'base.html' %}
+
+{% block title %}Meus Pedidos - Livraria Lusitana{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Meus Pedidos</h2>
+  
+  {% if user.orders.all %}
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Número do Pedido</th>
+              <th>Data</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in user.orders.all %}
+            <tr>
+              <td>{{ order.id }}</td>
+              <td>{{ order.order_date|date:"d/m/Y" }}</td>
+              <td>{{ order.get_status_display }}</td>
+              <td>{{ order.formatted_total }}</td>
+              <td>
+                <a href="#" class="btn btn-sm btn-outline-primary">Detalhes</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <i class="bi bi-box display-1 text-muted"></i>
+      <h4 class="mt-3">Você ainda não fez nenhum pedido</h4>
+      <p>Quando você fizer um pedido, ele aparecerá aqui.</p>
+      <a href="{% url 'home' %}" class="btn btn-primary mt-3">Continuar Comprando</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

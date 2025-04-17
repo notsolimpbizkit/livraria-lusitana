@@ -11,6 +11,8 @@ urlpatterns = [
     path('books/', include('books.urls')),
     path('api/', include('api.urls')),
     path('checkout/', include('checkout.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('users/', include('users.urls')),
     # We'll add more URLs later
 ]
 

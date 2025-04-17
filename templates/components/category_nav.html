@@ -1,0 +1,24 @@
+<!-- templates/components/category_nav.html -->
+<div class="category-nav mb-4">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#categoryNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="categoryNavbar">
+            <ul class="navbar-nav">
+              {% for category in categories %}
+              <li class="nav-item">
+                <a class="nav-link {% if selected_category_id == category.id|stringformat:'s' %}active{% endif %}" 
+                   href="{% url 'category_books' category.id %}">
+                  {{ category.name }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>

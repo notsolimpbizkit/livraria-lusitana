@@ -31,7 +31,11 @@
         <div class="col-md-2">
             <div class="card">
                 <a href="{% url 'book_detail' book.id %}">
-                    <img src="{{ book.image.url }}" class="card-img-top essentials" alt="{{ book.title }}">
+                    {% if book.image %}
+                        <img src="{{ book.image.url }}" class="card-img-top essentials" alt="{{ book.title }}">
+                    {% else %}
+                        <img src="{% static 'images/book_placeholder.jpg' %}" class="card-img-top essentials" alt="{{ book.title }}">
+                    {% endif %}
                 </a>
                 <div class="card-body">
                     <h5 class="card-title">{{ book.title }}</h5>
@@ -71,7 +75,11 @@
         <div class="col-md-2">
             <div class="card">
                 <a href="{% url 'book_detail' book.id %}">
-                    <img src="{{ book.image.url }}" class="card-img-top essentials" alt="{{ book.title }}">
+                    {% if book.image %}
+                        <img src="{{ book.image.url }}" class="card-img-top essentials" alt="{{ book.title }}">
+                    {% else %}
+                        <img src="{% static 'images/book_placeholder.jpg' %}" class="card-img-top essentials" alt="{{ book.title }}">
+                    {% endif %}
                 </a>
                 <div class="card-body">
                     <h5 class="card-title">{{ book.title }}</h5>
