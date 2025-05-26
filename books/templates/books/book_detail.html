@@ -3,255 +3,729 @@
 
 {% block title %}{{ book.title }} - Livraria Lusitana{% endblock %}
 
+{% block extra_css %}
+<style>
+  .book-detail-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+  
+  .book-detail-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(139, 94, 59, 0.15);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border: none;
+    transition: transform 0.3s ease;
+  }
+  
+  .book-detail-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .book-cover-container {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .book-cover-image {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(139, 94, 59, 0.3);
+    transition: transform 0.3s ease;
+  }
+  
+  .book-cover-image:hover {
+    transform: scale(1.05);
+  }
+  
+  .book-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+  }
+  
+  .book-author {
+    color: #8b5e3b;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  
+  .book-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #27ae60;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
+  }
+  
+  .rating-display {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .rating-stars {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .rating-text {
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+  
+  .stock-info {
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  
+  .stock-success { 
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); 
+    color: #155724; 
+    border-left: 5px solid #28a745;
+  }
+  .stock-warning { 
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); 
+    color: #856404; 
+    border-left: 5px solid #ffc107;
+  }
+  .stock-danger { 
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); 
+    color: #721c24; 
+    border-left: 5px solid #dc3545;
+  }
+  
+  .btn-add-cart-detail {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 18px 35px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.3);
+  }
+  
+  .btn-add-cart-detail:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 94, 59, 0.4);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+  }
+  
+  .btn-wishlist {
+    border: 3px solid #8b5e3b;
+    color: #8b5e3b;
+    background: white;
+    border-radius: 15px;
+    padding: 15px 35px;
+    font-weight: 700;
+    width: 100%;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .btn-wishlist:hover {
+    background: #8b5e3b;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(139, 94, 59, 0.3);
+  }
+  
+  .synopsis-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .synopsis-title {
+    color: #8b5e3b;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+  
+  .synopsis-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #2c3e50;
+    text-align: justify;
+  }
+  
+  .book-details-table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 20px rgba(139, 94, 59, 0.1);
+  }
+  
+  .book-details-table .table th {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .book-details-table .table td {
+    padding: 1.2rem 1.5rem;
+    border: none;
+    border-bottom: 1px solid #f8f9fa;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+  
+  .book-details-table .table tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .reviews-section {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(139, 94, 59, 0.15);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reviews-title {
+    color: #8b5e3b;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .review-form {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border: 2px solid #e8dcc8;
+  }
+  
+  .review-form h5 {
+    color: #8b5e3b;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
+    color: #8b5e3b;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+  
+  .form-control, .form-select {
+    border: 2px solid #e8dcc8;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    border-color: #8b5e3b;
+    box-shadow: 0 0 0 0.2rem rgba(139, 94, 59, 0.25);
+  }
+  
+  .btn-review-submit {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-review-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 94, 59, 0.4);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+  }
+  
+  .review-item {
+    border: none;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 2rem;
+    border-left: 4px solid #8b5e3b;
+    box-shadow: 0 5px 15px rgba(139, 94, 59, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .review-item:hover {
+    transform: translateX(5px);
+  }
+  
+  .review-stars {
+    color: #ffc107;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+  
+  .review-username {
+    color: #8b5e3b;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  
+  .review-date {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+  
+  .review-text {
+    color: #2c3e50;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .related-books-section {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(139, 94, 59, 0.15);
+    padding: 2.5rem;
+  }
+  
+  .related-books-title {
+    color: #8b5e3b;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .related-book-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(139, 94, 59, 0.1);
+    border: none;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .related-book-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
+  }
+  
+  .related-book-cover {
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .related-book-card:hover .related-book-cover {
+    transform: scale(1.05);
+  }
+  
+  .related-book-body {
+    padding: 1.5rem;
+  }
+  
+  .related-book-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    height: 2.4rem;
+    overflow: hidden;
+  }
+  
+  .related-book-author {
+    color: #8b5e3b;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .related-book-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #27ae60;
+    margin-bottom: 1rem;
+  }
+  
+  .btn-add-related {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+  
+  .btn-add-related:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139, 94, 59, 0.4);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+  }
+  
+  .alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border-color: #8b5e3b;
+    color: #0c5460;
+    border-radius: 15px;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .alert-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-color: #8b5e3b;
+    color: #6c757d;
+    border-radius: 15px;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .breadcrumb-nav {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(139, 94, 59, 0.1);
+  }
+  
+  .breadcrumb {
+    margin: 0;
+    background: none;
+  }
+  
+  .breadcrumb-item a {
+    color: #8b5e3b;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .breadcrumb-item a:hover {
+    color: #a67c5a;
+  }
+  
+  .breadcrumb-item.active {
+    color: #6c757d;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-  <div class="row">
-    <!-- Book cover and purchase options -->
-    <div class="col-md-4">
-      <div class="card border-0">
-        {% if book.image %}
-          <img src="{{ book.image.url }}" class="img-fluid rounded" alt="{{ book.title }}">
-        {% else %}
-          <img src="{% static 'images/book_placeholder.jpg' %}" class="img-fluid rounded" alt="{{ book.title }}">
-        {% endif %}
-        
-        <div class="mt-3">
-          <div class="d-grid gap-2">
-            <button class="btn btn-primary btn-lg js-add-to-cart" data-book-id="{{ book.id }}">
-              <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
-            </button>
-            
-            {% if user.is_authenticated %}
-            <button class="btn btn-outline-secondary js-add-to-wishlist" data-book-id="{{ book.id }}">
-              <i class="bi bi-heart"></i> Adicionar aos Favoritos
-            </button>
+<div class="book-detail-container">
+  <div class="container">
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb-nav">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'book_list' %}">Livros</a></li>
+          {% if book.category %}
+          <li class="breadcrumb-item"><a href="{% url 'category_books' book.category.id %}">{{ book.category.name }}</a></li>
+          {% endif %}
+          <li class="breadcrumb-item active" aria-current="page">{{ book.title }}</li>
+        </ol>
+      </nav>
+    </div>
+    
+    <div class="row">
+      <!-- Book cover and purchase options -->
+      <div class="col-md-4">
+        <div class="book-detail-card">
+          <div class="book-cover-container">
+            {% if book.image %}
+              <img src="{{ book.image.url }}" class="book-cover-image" alt="{{ book.title }}">
+            {% else %}
+              <img src="{% static 'images/book_placeholder.jpg' %}" class="book-cover-image" alt="{{ book.title }}">
             {% endif %}
           </div>
           
           <!-- Stock information -->
           {% if book.stock > 10 %}
-            <p class="text-success mt-3">
-              <i class="bi bi-check-circle-fill"></i> Em estoque
-            </p>
+            <div class="stock-info stock-success">
+              <i class="bi bi-check-circle-fill me-2"></i>Em Estoque
+            </div>
           {% elif book.stock > 0 %}
-            <p class="text-warning mt-3">
-              <i class="bi bi-exclamation-circle-fill"></i> Restam apenas {{ book.stock }} unidades
-            </p>
+            <div class="stock-info stock-warning">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>Apenas {{ book.stock }} unidades restantes
+            </div>
           {% else %}
-            <p class="text-danger mt-3">
-              <i class="bi bi-x-circle-fill"></i> Fora de estoque
-            </p>
+            <div class="stock-info stock-danger">
+              <i class="bi bi-x-circle-fill me-2"></i>Fora de Estoque
+            </div>
           {% endif %}
+          
+          <div class="d-grid gap-3">
+            <button class="btn btn-primary btn-add-cart-detail js-add-to-cart" data-book-id="{{ book.id }}">
+              <i class="bi bi-cart-plus me-2"></i>Adicionar ao Carrinho
+            </button>
+            
+            {% if user.is_authenticated %}
+            <button class="btn btn-outline-secondary btn-wishlist js-add-to-wishlist" data-book-id="{{ book.id }}">
+              <i class="bi bi-heart me-2"></i>Adicionar aos Favoritos
+            </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Book details -->
+      <div class="col-md-8">
+        <div class="book-detail-card">
+          <h1 class="book-title">{{ book.title }}</h1>
+          <p class="book-author">por <strong>{{ book.author }}</strong></p>
+          
+          <!-- Rating display -->
+          <div class="rating-display">
+            <div class="rating-stars">
+              <!-- Your fixed star rating code goes here -->
+              {% if book.avg_rating and book.avg_rating > 0 %}
+                {% if book.avg_rating >= 1 %}
+                  <i class="bi bi-star-fill text-warning"></i>
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+                {% if book.avg_rating >= 2 %}
+                  <i class="bi bi-star-fill text-warning"></i>
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+                {% if book.avg_rating >= 3 %}
+                  <i class="bi bi-star-fill text-warning"></i>
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+                {% if book.avg_rating >= 4 %}
+                  <i class="bi bi-star-fill text-warning"></i>
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+                {% if book.avg_rating >= 5 %}
+                  <i class="bi bi-star-fill text-warning"></i>
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+              {% else %}
+                <i class="bi bi-star text-muted"></i>
+                <i class="bi bi-star text-muted"></i>
+                <i class="bi bi-star text-muted"></i>
+                <i class="bi bi-star text-muted"></i>
+                <i class="bi bi-star text-muted"></i>
+              {% endif %}
+            </div>
+            <div class="rating-text">
+              {% if book.avg_rating and book.avg_rating > 0 %}
+                {{ book.avg_rating|floatformat:1 }} de 5 estrelas ({{ book.reviews.count }} avaliações)
+              {% else %}
+                Sem avaliações ainda
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="book-price">{{ book.formatted_price }}</div>
+          
+          <!-- Synopsis -->
+          <div class="synopsis-section">
+            <h3 class="synopsis-title"><i class="bi bi-book me-2"></i>Sinopse</h3>
+            <p class="synopsis-text">{{ book.synopsis }}</p>
+          </div>
+          
+          <!-- Book details table -->
+          <div class="book-details-table">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th colspan="2"><i class="bi bi-info-circle me-2"></i>Detalhes do Livro</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ISBN</strong></td>
+                  <td>{{ book.isbn }}</td>
+                </tr>
+                <tr>
+                  <td><strong>Editora</strong></td>
+                  <td>{{ book.publisher }}</td>
+                </tr>
+                <tr>
+                  <td><strong>Data de Publicação</strong></td>
+                  <td>{{ book.publication_date|date:"d/m/Y" }}</td>
+                </tr>
+                <tr>
+                  <td><strong>Idioma</strong></td>
+                  <td>{{ book.language }}</td>
+                </tr>
+                <tr>
+                  <td><strong>Páginas</strong></td>
+                  <td>{{ book.pages }}</td>
+                </tr>
+                <tr>
+                  <td><strong>Encadernação</strong></td>
+                  <td>{{ book.binding_type }}</td>
+                </tr>
+                {% if book.dimensions %}
+                <tr>
+                  <td><strong>Dimensões</strong></td>
+                  <td>{{ book.dimensions }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <td><strong>Categoria</strong></td>
+                  <td>
+                    <a href="{% url 'category_books' book.category.id %}" class="text-decoration-none" style="color: #8b5e3b; font-weight: 600;">
+                      {{ book.category.name }}
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
     
-    <!-- Book details -->
-    <div class="col-md-8">
-      <h1 class="mb-2">{{ book.title }}</h1>
-      <p class="text-muted mb-1">por <strong>{{ book.author }}</strong></p>
-      
-      <!-- Rating display -->
-      <div class="mb-3">
-        {% if book.avg_rating %}
-          <div class="ratings">
-            {% for i in "12345" %}
-              {% if forloop.counter <= book.avg_rating|floatformat:"0" %}
-                <i class="bi bi-star-fill text-warning"></i>
-              {% else %}
-                <i class="bi bi-star text-warning"></i>
-              {% endif %}
-            {% endfor %}
-            <span class="ms-2">{{ book.avg_rating|floatformat:1 }} ({{ book.reviews.count }} avaliações)</span>
-          </div>
-        {% else %}
-          <div class="ratings">
-            <i class="bi bi-star text-muted"></i>
-            <i class="bi bi-star text-muted"></i>
-            <i class="bi bi-star text-muted"></i>
-            <i class="bi bi-star text-muted"></i>
-            <i class="bi bi-star text-muted"></i>
-            <span class="ms-2 text-muted">Sem avaliações</span>
-          </div>
-        {% endif %}
-      </div>
-      
-      <h2 class="fs-3 text-primary mb-3">{{ book.formatted_price }}</h2>
-      
-      <div class="mb-4">
-        <h3 class="fs-5">Sinopse</h3>
-        <p>{{ book.synopsis }}</p>
-      </div>
-      
-      <!-- Book details in a responsive table -->
-      <div class="mb-4">
-        <h3 class="fs-5">Detalhes do Livro</h3>
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <tbody>
-              <tr>
-                <th style="width: 30%">Título</th>
-                <td>{{ book.title }}</td>
-              </tr>
-              <tr>
-                <th>Autor</th>
-                <td>{{ book.author }}</td>
-              </tr>
-              <tr>
-                <th>ISBN</th>
-                <td>{{ book.isbn }}</td>
-              </tr>
-              <tr>
-                <th>Editora</th>
-                <td>{{ book.publisher }}</td>
-              </tr>
-              <tr>
-                <th>Data de Publicação</th>
-                <td>{{ book.publication_date|date:"d/m/Y" }}</td>
-              </tr>
-              <tr>
-                <th>Idioma</th>
-                <td>{{ book.language }}</td>
-              </tr>
-              <tr>
-                <th>Páginas</th>
-                <td>{{ book.pages }}</td>
-              </tr>
-              <tr>
-                <th>Encadernação</th>
-                <td>{{ book.binding_type }}</td>
-              </tr>
-              {% if book.dimensions %}
-              <tr>
-                <th>Dimensões</th>
-                <td>{{ book.dimensions }}</td>
-              </tr>
-              {% endif %}
-              <tr>
-                <th>Categoria</th>
-                <td>
-                  <a href="{% url 'category_books' book.category.id %}">{{ book.category.name }}</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Reviews section -->
-  <div class="row mt-5">
-    <div class="col-12">
-      <h3>Avaliações e Comentários</h3>
+    <!-- Reviews section -->
+    <div class="reviews-section">
+      <h3 class="reviews-title">
+        <i class="bi bi-chat-left-text me-3"></i>Avaliações e Comentários
+      </h3>
       
       {% if user.is_authenticated %}
-        {% if user_review %}
-          <!-- User has already reviewed this book -->
-          <div class="alert alert-info mb-4">
-            <p>Você já avaliou este livro. Você pode atualizar sua avaliação abaixo.</p>
-          </div>
-        {% endif %}
-        
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title">{% if user_review %}Editar sua avaliação{% else %}Deixe sua avaliação{% endif %}</h5>
-            <form method="post" action="{% url 'add_review' book.id %}">
-              {% csrf_token %}
-              
-              <div class="mb-3">
-                <label for="rating" class="form-label">Avaliação</label>
-                <select class="form-select" name="rating" id="rating" required>
-                  <option value="5" {% if user_review and user_review.rating == 5 %}selected{% endif %}>★★★★★ (5/5)</option>
-                  <option value="4" {% if user_review and user_review.rating == 4 %}selected{% endif %}>★★★★☆ (4/5)</option>
-                  <option value="3" {% if user_review and user_review.rating == 3 %}selected{% endif %}>★★★☆☆ (3/5)</option>
-                  <option value="2" {% if user_review and user_review.rating == 2 %}selected{% endif %}>★★☆☆☆ (2/5)</option>
-                  <option value="1" {% if user_review and user_review.rating == 1 %}selected{% endif %}>★☆☆☆☆ (1/5)</option>
-                </select>
-              </div>
-              
-              <div class="mb-3">
-                <label for="review_text" class="form-label">Comentário</label>
-                <textarea class="form-control" name="review_text" id="review_text" rows="3" required>{% if user_review %}{{ user_review.review_text }}{% endif %}</textarea>
-              </div>
-              
-              <button type="submit" class="btn btn-primary">{% if user_review %}Atualizar Avaliação{% else %}Enviar Avaliação{% endif %}</button>
-            </form>
-          </div>
+        <div class="review-form">
+          <h5>{% if user_review %}Editar sua avaliação{% else %}Deixe sua avaliação{% endif %}</h5>
+          <form method="post" action="{% url 'add_review' book.id %}">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+              <label for="rating" class="form-label">
+                <i class="bi bi-star me-2"></i>Sua avaliação
+              </label>
+              <select class="form-select" name="rating" id="rating" required>
+                <option value="">Selecione uma avaliação</option>
+                <option value="5" {% if user_review and user_review.rating == 5 %}selected{% endif %}>★★★★★ Excelente (5/5)</option>
+                <option value="4" {% if user_review and user_review.rating == 4 %}selected{% endif %}>★★★★☆ Muito Bom (4/5)</option>
+                <option value="3" {% if user_review and user_review.rating == 3 %}selected{% endif %}>★★★☆☆ Bom (3/5)</option>
+                <option value="2" {% if user_review and user_review.rating == 2 %}selected{% endif %}>★★☆☆☆ Regular (2/5)</option>
+                <option value="1" {% if user_review and user_review.rating == 1 %}selected{% endif %}>★☆☆☆☆ Ruim (1/5)</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label for="review_text" class="form-label">
+                <i class="bi bi-pencil me-2"></i>Seu comentário
+              </label>
+              <textarea class="form-control" name="review_text" id="review_text" rows="4" required placeholder="Compartilhe sua opinião sobre este livro...">{% if user_review %}{{ user_review.review_text }}{% endif %}</textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-review-submit">
+              {% if user_review %}
+                <i class="bi bi-pencil me-2"></i>Atualizar Avaliação
+              {% else %}
+                <i class="bi bi-send me-2"></i>Enviar Avaliação
+              {% endif %}
+            </button>
+          </form>
         </div>
       {% else %}
-        <div class="alert alert-info mb-4">
-          <p>Para deixar uma avaliação, por favor <a href="{% url 'login' %}?next={{ request.path }}">entre na sua conta</a> ou <a href="{% url 'register' %}">crie uma conta</a>.</p>
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          Para deixar uma avaliação, por favor 
+          <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link fw-bold">entre na sua conta</a> 
+          ou <a href="{% url 'register' %}" class="alert-link fw-bold">crie uma conta</a>.
         </div>
       {% endif %}
       
       <!-- Display existing reviews -->
       {% if reviews %}
-        <div class="card">
-          <div class="card-header bg-light">
-            <h5 class="mb-0">{{ reviews.count }} Avaliações</h5>
+        <h5 class="mt-4 mb-3" style="color: #8b5e3b; font-weight: 700;">
+          <i class="bi bi-chat-square-text me-2"></i>{{ reviews.count }} Avaliações
+        </h5>
+        {% for review in reviews %}
+          <div class="review-item">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="review-username mb-0">{{ review.user.username }}</h6>
+              <small class="review-date">{{ review.created_at|date:"d/m/Y H:i" }}</small>
+            </div>
+            <div class="review-stars mb-2">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <i class="bi bi-star-fill"></i>
+                {% else %}
+                  <i class="bi bi-star"></i>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <p class="review-text mb-0">{{ review.review_text }}</p>
           </div>
-          <div class="list-group list-group-flush">
-            {% for review in reviews %}
-              <div class="list-group-item">
-                <div class="d-flex justify-content-between align-items-center">
-                  <h6 class="mb-1">{{ review.user.username }}</h6>
-                  <small class="text-muted">{{ review.created_at|date:"d/m/Y" }}</small>
-                </div>
-                <div class="mb-2 text-warning">
-                  {% for i in "12345" %}
-                    {% if forloop.counter <= review.rating %}
-                      <i class="bi bi-star-fill"></i>
-                    {% else %}
-                      <i class="bi bi-star"></i>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-                <p class="mb-1">{{ review.review_text }}</p>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
+        {% endfor %}
       {% else %}
         <div class="alert alert-light">
-          <p>Sem avaliações ainda. Seja o primeiro a avaliar!</p>
+          <i class="bi bi-chat-left me-2"></i>
+          Sem avaliações ainda. Seja o primeiro a avaliar este livro!
         </div>
       {% endif %}
     </div>
-  </div>
-  
-  <!-- Related books section -->
-  {% if related_books %}
-  <div class="row mt-5">
-    <div class="col-12">
-      <h3>Livros Relacionados</h3>
-    </div>
     
-    {% for related in related_books %}
-    <div class="col-md-3 mb-4">
-      <div class="card h-100">
-        <a href="{% url 'book_detail' related.id %}">
-          {% if img %}
-            <img src="{{ related.image.url }}" class="card-img-top book-cover" alt="{{ related.title }}">
-          {% else %}
-            <img src="{% static 'images/book_placeholder.jpg' %}" class="img-fluid rounded" alt="{{ book.title }}">
-          {% endif %}
-        </a>
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ related.title }}</h5>
-          <p class="card-text text-muted">{{ related.author }}</p>
-          <p class="card-text"><strong class="text-primary">{{ related.formatted_price }}</strong></p>
-          <div class="mt-auto">
-            <button class="btn btn-primary w-100 js-add-to-cart" data-book-id="{{ related.id }}">
-              <i class="bi bi-cart-plus"></i> Adicionar
-            </button>
+    <!-- Related books section -->
+    {% if related_books %}
+    <div class="related-books-section">
+      <h3 class="related-books-title">
+        <i class="bi bi-collection me-3"></i>Livros Relacionados
+      </h3>
+      
+      <div class="row">
+        {% for related in related_books %}
+        <div class="col-md-3 mb-4">
+          <div class="card related-book-card h-100">
+            <a href="{% url 'book_detail' related.id %}">
+              {% if related.image %}
+                <img src="{{ related.image.url }}" class="card-img-top related-book-cover" alt="{{ related.title }}">
+              {% else %}
+                <img src="{% static 'images/book_placeholder.jpg' %}" class="card-img-top related-book-cover" alt="{{ related.title }}">
+              {% endif %}
+            </a>
+            <div class="card-body related-book-body d-flex flex-column">
+              <h5 class="related-book-title">{{ related.title }}</h5>
+              <p class="related-book-author">{{ related.author }}</p>
+              <p class="related-book-price">{{ related.formatted_price }}</p>
+              <div class="mt-auto">
+                <button class="btn btn-primary btn-add-related js-add-to-cart" data-book-id="{{ related.id }}">
+                  <i class="bi bi-cart-plus me-2"></i>Adicionar
+                </button>
+              </div>
+            </div>
           </div>
         </div>
+        {% endfor %}
       </div>
     </div>
-    {% endfor %}
+    {% endif %}
   </div>
-  {% endif %}
 </div>
 {% endblock %}
 
