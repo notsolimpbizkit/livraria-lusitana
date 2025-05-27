@@ -1,4 +1,4 @@
-// This is a simplified version - you'll need to adapt further as needed
+// File path: static/js/utils/cart-utils.js 
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Format price from cents to currency

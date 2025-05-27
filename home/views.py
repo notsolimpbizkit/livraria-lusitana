@@ -15,10 +15,13 @@ def home(request):
     bestseller_ids = [28, 29, 26, 22, 24, 23]
     bestsellers = Book.objects.filter(id__in=bestseller_ids).annotate(avg_rating=Avg('reviews__rating'))
     bestsellers = sorted(bestsellers, key=lambda x: bestseller_ids.index(x.id))
+
+    carousel_books = Book.objects.filter(id__in=[20, 21, 22])
     
     context = {
         'featured_books': featured_books,
         'categories': categories,
-        'bestsellers': bestsellers
+        'bestsellers': bestsellers,
+        'carousel_books': carousel_books
     }
     return render(request, 'home/index.html', context)

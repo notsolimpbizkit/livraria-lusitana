@@ -1,97 +1,591 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+  .home-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+  }
+  
+  /* Carousel Styling */
+  .hero-carousel {
+    position: relative;
+    margin-bottom: 4rem;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(139, 94, 59, 0.3);
+    background: white;
+  }
+  
+  .carousel-item {
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s ease;
+  }
+  
+  .carousel-item:hover img {
+    transform: scale(1.05);
+  }
+  
+  .carousel-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 2rem;
+    z-index: 2;
+  }
+  
+  .carousel-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  
+  .carousel-author {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+  
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(139, 94, 59, 0.8);
+    border-radius: 50%;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  
+  .carousel-control-prev {
+    left: 20px;
+  }
+  
+  .carousel-control-next {
+    right: 20px;
+  }
+  
+  .carousel-control-prev:hover,
+  .carousel-control-next:hover {
+    background: rgba(139, 94, 59, 1);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Section Styling */
+  .section-container {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
+    padding: 3rem 2.5rem;
+    margin-bottom: 3rem;
+    border: none;
+  }
+  
+  .section-title {
+    color: #8b5e3b;
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border-radius: 2px;
+  }
+  
+  /* Book Card Styling */
+  .book-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(139, 94, 59, 0.12);
+    border: none;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(139, 94, 59, 0.2);
+  }
+  
+  .book-cover {
+    height: 180px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    width: 100%;
+  }
+  
+  .book-card:hover .book-cover {
+    transform: scale(1.05);
+  }
+  
+  .book-card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 180px);
+  }
+  
+  .book-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    height: 2.5rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  
+  .book-title a {
+    color: #2c3e50;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .book-title a:hover {
+    color: #8b5e3b;
+  }
+  
+  .book-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #27ae60;
+    margin-bottom: 0.8rem;
+  }
+  
+  /* Star Rating */
+  .book-rating {
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .rating-stars {
+    color: #ffc107;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+  }
+  
+  .rating-count {
+    color: #6c757d;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  .btn-add-cart {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: auto;
+    box-shadow: 0 3px 10px rgba(139, 94, 59, 0.3);
+    color: white;
+  }
+  
+  .btn-add-cart:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(139, 94, 59, 0.4);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+    color: white;
+  }
+  
+  /* Category Card Styling */
+  .category-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.12);
+    border: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    height: 100%;
+    margin-bottom: 2rem;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(139, 94, 59, 0.2);
+  }
+  
+  .category-title {
+    color: #8b5e3b;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .category-icon {
+    font-size: 3rem;
+    color: #a67c5a;
+    margin-bottom: 1rem;
+  }
+  
+  .btn-category {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 8px 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .btn-category:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139, 94, 59, 0.3);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+    color: white;
+    text-decoration: none;
+  }
+  
+  /* Grid System */
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1400px) {
+    .books-grid {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.2rem;
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .books-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .carousel-item {
+      height: 300px;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+    }
+    
+    .books-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .carousel-item {
+      height: 250px;
+    }
+    
+    .carousel-title {
+      font-size: 1.4rem;
+    }
+    
+    .section-container {
+      padding: 2rem 1.5rem;
+    }
+    
+    .books-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .categories-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .carousel-item {
+      height: 200px;
+    }
+    
+    .books-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .categories-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .book-cover {
+      height: 160px;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Carousel Banner -->
-<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Livro 1">
+<div class="home-container">
+  <div class="container-fluid px-4 py-4">
+    
+    <!-- Hero Carousel -->
+    <div class="hero-carousel">
+      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% for book in carousel_books %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            {% if book.image %}
+              <img src="{{ book.image.url }}" alt="{{ book.title }}">
+            {% else %}
+              <img src="https://via.placeholder.com/1200x400/8b5e3b/ffffff?text=Livro" alt="{{ book.title }}">
+            {% endif %}
+            <div class="carousel-overlay">
+              <h3 class="carousel-title">{{ book.title }}</h3>
+              <p class="carousel-author">{{ book.author }}</p>
+            </div>
+          </div>
+          {% empty %}
+          <div class="carousel-item active">
+            <img src="https://via.placeholder.com/1200x400/8b5e3b/ffffff?text=Livraria+Lusitana" alt="Livraria Lusitana">
+            <div class="carousel-overlay">
+              <h3 class="carousel-title">Bem-vindo à Livraria Lusitana</h3>
+              <p class="carousel-author">Descubra o seu próximo livro favorito</p>
+            </div>
+          </div>
+          {% endfor %}
         </div>
-        <div class="carousel-item">
-            <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Livro 2">
-        </div>
-        <div class="carousel-item">
-            <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Livro 3">
-        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+      </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    </button>
-</div>
 
-<!-- Featured Books -->
-<div class="container mt-4">
-    <h2 class="text-center">Destaques</h2>
-    <div class="row">
+    <!-- Featured Books Section -->
+    <div class="section-container">
+      <h2 class="section-title">
+        <i class="bi bi-star-fill me-3"></i>Destaques
+      </h2>
+      <div class="books-grid">
         {% for book in featured_books %}
-        <div class="col-md-2">
-            <div class="card">
-                <a href="{% url 'book_detail' book.id %}">
-                    {% if book.image %}
-                        <img src="{{ book.image.url }}" class="card-img-top essentials" alt="{{ book.title }}">
-                    {% else %}
-                        <img src="{% static 'images/book_placeholder.jpg' %}" class="card-img-top essentials" alt="{{ book.title }}">
-                    {% endif %}
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">{{ book.title }}</h5>
-                    <p class="card-text">{{ book.formatted_price }}</p>
-                </div>
-                <button class="add-to-cart-button button-primary js-add-to-cart" data-book-id="{{ book.id }}">
-                    Adicionar ao Carrinho
-                </button>
+        <div class="book-card">
+          <a href="{% url 'book_detail' book.id %}">
+            {% if book.image %}
+              <img src="{{ book.image.url }}" class="book-cover" alt="{{ book.title }}">
+            {% else %}
+              <img src="{% static 'images/book_placeholder.jpg' %}" class="book-cover" alt="{{ book.title }}">
+            {% endif %}
+          </a>
+          <div class="book-card-body">
+            <h5 class="book-title">
+              <a href="{% url 'book_detail' book.id %}">{{ book.title }}</a>
+            </h5>
+            <p class="book-price">{{ book.formatted_price }}</p>
+            
+            <!-- Rating display -->
+            <div class="book-rating">
+              <div class="rating-stars">
+                {% if book.avg_rating and book.avg_rating > 0 %}
+                  {% if book.avg_rating >= 1 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 2 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 3 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 4 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 5 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+              </div>
+              <span class="rating-count">
+                {% if book.avg_rating %}
+                  ({{ book.reviews.count }} avaliações)
+                {% else %}
+                  (Sem avaliações)
+                {% endif %}
+              </span>
             </div>
+            
+            <button class="btn btn-add-cart js-add-to-cart" data-book-id="{{ book.id }}">
+              <i class="bi bi-cart-plus me-1"></i>Adicionar
+            </button>
+          </div>
         </div>
         {% endfor %}
+      </div>
     </div>
-</div>
 
-<!-- Categories -->
-<div class="container mt-5">
-    <h2 class="text-center">Categorias</h2>
-    <div class="row mt-3">
+    <!-- Categories Section -->
+    <div class="section-container">
+      <h2 class="section-title">
+        <i class="bi bi-bookmarks-fill me-3"></i>Categorias
+      </h2>
+      <div class="categories-grid">
         {% for category in categories %}
-        <div class="col-md-2">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">{{ category.name }}</h5>
-                    <a href="{% url 'category_books' category.id %}" class="btn btn-outline-primary btn-sm">Ver Livros</a>
-                </div>
-            </div>
+        <div class="category-card">
+          <div class="category-icon">
+            <i class="bi bi-bookmark-fill"></i>
+          </div>
+          <h5 class="category-title">{{ category.name }}</h5>
+          <a href="{% url 'category_books' category.id %}" class="btn-category">
+            Ver Livros
+          </a>
         </div>
         {% endfor %}
+      </div>
     </div>
-</div>
 
-<!-- Bestsellers -->
-<div class="container mt-5">
-    <h2 class="text-center">Mais Vendidos</h2>
-    <div class="row">
+    <!-- Bestsellers Section -->
+    <div class="section-container">
+      <h2 class="section-title">
+        <i class="bi bi-trophy-fill me-3"></i>Mais Vendidos
+      </h2>
+      <div class="books-grid">
         {% for book in bestsellers %}
-        <div class="col-md-2">
-            <div class="card">
-                <a href="{% url 'book_detail' book.id %}">
-                    {% if book.image %}
-                        <img src="{{ book.image.url }}" class="card-img-top essentials" alt="{{ book.title }}">
-                    {% else %}
-                        <img src="{% static 'images/book_placeholder.jpg' %}" class="card-img-top essentials" alt="{{ book.title }}">
-                    {% endif %}
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">{{ book.title }}</h5>
-                    <p class="card-text">{{ book.formatted_price }}</p>
-                </div>
-                <button class="add-to-cart-button button-primary js-add-to-cart" data-book-id="{{ book.id }}">
-                    Adicionar ao Carrinho
-                </button>
+        <div class="book-card">
+          <a href="{% url 'book_detail' book.id %}">
+            {% if book.image %}
+              <img src="{{ book.image.url }}" class="book-cover" alt="{{ book.title }}">
+            {% else %}
+              <img src="{% static 'images/book_placeholder.jpg' %}" class="book-cover" alt="{{ book.title }}">
+            {% endif %}
+          </a>
+          <div class="book-card-body">
+            <h5 class="book-title">
+              <a href="{% url 'book_detail' book.id %}">{{ book.title }}</a>
+            </h5>
+            <p class="book-price">{{ book.formatted_price }}</p>
+            
+            <!-- Rating display -->
+            <div class="book-rating">
+              <div class="rating-stars">
+                {% if book.avg_rating and book.avg_rating > 0 %}
+                  {% if book.avg_rating >= 1 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 2 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 3 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 4 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                  {% if book.avg_rating >= 5 %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                  {% else %}
+                    <i class="bi bi-star text-muted"></i>
+                  {% endif %}
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+              </div>
+              <span class="rating-count">
+                {% if book.avg_rating %}
+                  ({{ book.reviews.count }} avaliações)
+                {% else %}
+                  (Sem avaliações)
+                {% endif %}
+              </span>
             </div>
+            
+            <button class="btn btn-add-cart js-add-to-cart" data-book-id="{{ book.id }}">
+              <i class="bi bi-cart-plus me-1"></i>Adicionar
+            </button>
+          </div>
         </div>
         {% endfor %}
+      </div>
     </div>
+
+  </div>
 </div>
 {% endblock %}
 
