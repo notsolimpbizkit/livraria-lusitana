@@ -13,173 +13,267 @@
   
   .filter-sidebar {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(139, 94, 59, 0.1);
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
     padding: 0;
     overflow: hidden;
     border: none;
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+    width: 100%;
   }
   
   .filter-header {
     background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
     color: white;
-    padding: 1.5rem;
+    padding: 2.5rem 2rem;
     margin: 0;
     border: none;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .filter-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    animation: shimmer 4s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
   }
   
   .filter-header h5 {
     margin: 0;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1.4rem;
     display: flex;
     align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .filter-header .filter-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
   }
   
   .filter-body {
-    padding: 1.5rem;
+    padding: 2.5rem 2rem;
   }
   
   .filter-section {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    border-left: 5px solid #8b5e3b;
+    box-shadow: 0 5px 20px rgba(139, 94, 59, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .filter-section h6 {
-    color: #8b5e3b;
-    font-weight: 600;
-    margin-bottom: 1rem;
+  .filter-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(139, 94, 59, 0.15);
+  }
+  
+  .filter-section:last-child {
+    margin-bottom: 0;
+  }
+  
+
+  
+  .category-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .category-link {
     display: flex;
     align-items: center;
-  }
-  
-  .list-group-item {
-    border: none;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    transition: all 0.3s ease;
+    padding: 12px 16px;
+    border-radius: 15px;
+    text-decoration: none;
     color: #6c757d;
-  }
-  
-  .list-group-item:hover {
-    background-color: #f8f9fa;
-    transform: translateX(5px);
-    color: #8b5e3b;
-  }
-  
-  .list-group-item.active {
-    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
-    border-color: #8b5e3b;
-    transform: translateX(5px);
-  }
-  
-  .form-check-input:checked {
-    background-color: #8b5e3b;
-    border-color: #8b5e3b;
-  }
-  
-  .form-check-label {
-    color: #6c757d;
-    transition: color 0.3s ease;
-  }
-  
-  .form-check-input:checked + .form-check-label {
-    color: #8b5e3b;
     font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
   }
+  
+  .category-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 94, 59, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  .category-link:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #8b5e3b;
+    transform: translateX(8px);
+    border-color: #e8dcc8;
+  }
+  
+  .category-link:hover::before {
+    left: 100%;
+  }
+  
+  .category-link.active {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    color: white;
+    transform: translateX(8px);
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.3);
+    border-color: #8b5e3b;
+  }
+  
+  .category-link i {
+    margin-right: 12px;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  
+
   
   .book-card {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(139, 94, 59, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.12);
     border: none;
     transition: all 0.3s ease;
     overflow: hidden;
+    height: 100%;
   }
   
   .book-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
+    transform: translateY(-12px);
+    box-shadow: 0 20px 50px rgba(139, 94, 59, 0.25);
   }
   
   .book-cover {
-    height: 280px;
+    height: 320px;
     object-fit: cover;
     transition: transform 0.3s ease;
+    width: 100%;
   }
   
   .book-card:hover .book-cover {
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
   
   .book-card-body {
-    padding: 1.5rem;
+    padding: 1.8rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 320px);
   }
   
   .book-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #8b5e3b;
-    margin-bottom: 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.8rem;
     line-height: 1.4;
-    height: 2.8rem;
+    height: 3.2rem;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
   
+  .book-title a {
+    color: #2c3e50;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .book-title a:hover {
+    color: #8b5e3b;
+  }
+  
   .book-author {
     color: #8b5e3b;
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
   }
   
   .book-price {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: #27ae60;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
   }
   
   .book-rating {
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
   }
   
   .rating-stars {
     color: #ffc107;
-    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
   }
   
   .rating-count {
     color: #6c757d;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 500;
   }
   
   .btn-add-cart {
     background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
     border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 0.9rem;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
     width: 100%;
+    margin-top: auto;
+    box-shadow: 0 4px 15px rgba(139, 94, 59, 0.3);
   }
   
   .btn-add-cart:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(139, 94, 59, 0.4);
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.4);
     background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
   }
   
   .catalog-header {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(139, 94, 59, 0.1);
-    padding: 2rem;
-    margin-bottom: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(139, 94, 59, 0.15);
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
     border: none;
   }
   
@@ -189,123 +283,221 @@
     margin: 0;
     display: flex;
     align-items: center;
+    font-size: 2.2rem;
+  }
+  
+  .sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .sort-label {
+    color: #6c757d;
+    font-weight: 600;
+    white-space: nowrap;
+    font-size: 1rem;
   }
   
   .sort-select {
     border: 2px solid #e8dcc8;
-    border-radius: 10px;
-    padding: 8px 12px;
+    border-radius: 12px;
+    padding: 10px 16px;
     background: white;
     color: #8b5e3b;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-width: 200px;
   }
   
   .sort-select:focus {
     border-color: #8b5e3b;
-    box-shadow: 0 0 0 0.2rem rgba(139, 94, 59, 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(139, 94, 59, 0.25);
   }
   
   .empty-state {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 5rem 3rem;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(139, 94, 59, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(139, 94, 59, 0.15);
   }
   
   .empty-state i {
-    font-size: 4rem;
+    font-size: 5rem;
     color: #e8dcc8;
+    margin-bottom: 2rem;
+  }
+  
+  .empty-state h4 {
+    color: #8b5e3b;
+    font-weight: 700;
     margin-bottom: 1rem;
+  }
+  
+  .empty-state p {
+    color: #6c757d;
+    font-size: 1.1rem;
+  }
+  
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  
+  .catalog-stats {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .catalog-stats p {
+    margin: 0;
+    color: #6c757d;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1400px) {
+    .books-grid {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .books-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    
+    .catalog-header {
+      padding: 2rem;
+    }
+    
+    .catalog-title {
+      font-size: 1.8rem;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .filter-sidebar {
+      position: static;
+      margin-bottom: 2rem;
+    }
+    
+    .books-grid {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    
+    .catalog-header .d-flex {
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: flex-start !important;
+    }
+    
+    .sort-controls {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .filter-body {
+      padding: 2rem 1.5rem;
+    }
+    
+    .filter-section {
+      padding: 1.5rem;
+    }
+    
+    .category-link {
+      font-size: 0.9rem;
+      padding: 10px 14px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .books-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .book-cover {
+      height: 280px;
+    }
+    
+    .book-card-body {
+      padding: 1.5rem 1.2rem;
+      height: calc(100% - 280px);
+    }
+    
+    .catalog-header {
+      padding: 1.5rem;
+    }
+    
+    .filter-body {
+      padding: 1.5rem;
+    }
+    
+    .filter-section {
+      padding: 1.2rem;
+    }
+    
+    .category-link {
+      font-size: 0.85rem;
+      padding: 8px 12px;
+    }
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="book-catalog-container">
-  <div class="container">
+  <div class="container-fluid px-4">
     <div class="row">
       <!-- Filter Sidebar -->
-      <div class="col-lg-3 mb-4">
+      <div class="col-xl-3 col-lg-4 col-md-5 mb-4">
         <div class="card filter-sidebar">
           <div class="filter-header">
-            <h5><i class="bi bi-funnel-fill me-2"></i>Filtros</h5>
+            <div class="filter-icon">📚</div>
+            <h5>Categorias</h5>
           </div>
           <div class="filter-body">
-            <form method="get" id="filter-form">
-              <div class="filter-section">
-                <h6><i class="bi bi-bookmarks-fill me-2"></i>Categorias</h6>
-                <div class="list-group">
-                  <a href="{% url 'book_list' %}" class="list-group-item list-group-item-action {% if not selected_category_id %}active{% endif %}">
-                    <i class="bi bi-collection me-2"></i>Todas as Categorias
-                  </a>
-                  {% for category in categories %}
-                  <a href="{% url 'book_list' %}?category={{ category.id }}" 
-                     class="list-group-item list-group-item-action {% if selected_category_id == category.id|stringformat:'s' %}active{% endif %}">
-                    <i class="bi bi-bookmark-fill me-2"></i>{{ category.name }}
-                  </a>
-                  {% endfor %}
-                </div>
+            <!-- Categories Section -->
+            <div class="filter-section">
+              <div class="category-links">
+                <a href="{% url 'book_list' %}" class="category-link {% if not selected_category_id %}active{% endif %}">
+                  <i class="bi bi-collection-fill"></i>
+                  <span>Todas as Categorias</span>
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'book_list' %}?category={{ category.id }}" 
+                   class="category-link {% if selected_category_id == category.id|stringformat:'s' %}active{% endif %}">
+                  <i class="bi bi-bookmark-fill"></i>
+                  <span>{{ category.name }}</span>
+                </a>
+                {% endfor %}
               </div>
-              
-              <div class="filter-section">
-                <h6><i class="bi bi-currency-euro me-2"></i>Preço</h6>
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="radio" name="price" id="price-all" value="" 
-                         {% if not selected_price_range %}checked{% endif %} onchange="this.form.submit()">
-                  <label class="form-check-label" for="price-all">
-                    Todos os preços
-                  </label>
-                </div>
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="radio" name="price" id="price-under10" value="under10" 
-                         {% if selected_price_range == 'under10' %}checked{% endif %} onchange="this.form.submit()">
-                  <label class="form-check-label" for="price-under10">
-                    Menos de €10
-                  </label>
-                </div>
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="radio" name="price" id="price-10to20" value="10to20" 
-                         {% if selected_price_range == '10to20' %}checked{% endif %} onchange="this.form.submit()">
-                  <label class="form-check-label" for="price-10to20">
-                    €10 - €20
-                  </label>
-                </div>
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="radio" name="price" id="price-20to30" value="20to30" 
-                         {% if selected_price_range == '20to30' %}checked{% endif %} onchange="this.form.submit()">
-                  <label class="form-check-label" for="price-20to30">
-                    €20 - €30
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="price" id="price-over30" value="over30" 
-                         {% if selected_price_range == 'over30' %}checked{% endif %} onchange="this.form.submit()">
-                  <label class="form-check-label" for="price-over30">
-                    Mais de €30
-                  </label>
-                </div>
-              </div>
-              
-              {% if selected_category_id %}
-              <input type="hidden" name="category" value="{{ selected_category_id }}">
-              {% endif %}
-            </form>
+            </div>
           </div>
         </div>
       </div>
       
-      <!-- Book List -->
-      <div class="col-lg-9">
+      <!-- Book List - Adjusted width -->
+      <div class="col-xl-9 col-lg-8 col-md-7">
         <div class="catalog-header">
           <div class="d-flex justify-content-between align-items-center">
             <h1 class="catalog-title">
               <i class="bi bi-book-fill me-3"></i>Catálogo de Livros
             </h1>
             
-            <div class="d-flex align-items-center">
-              <span class="me-2 text-muted">Ordenar por:</span>
-              <select class="form-select sort-select" id="sort-select" style="width: auto;">
+            <div class="sort-controls">
+              <span class="sort-label">Ordenar por:</span>
+              <select class="form-select sort-select" id="sort-select">
                 <option value="title" {% if selected_sort == 'title' %}selected{% endif %}>Título (A-Z)</option>
                 <option value="price_asc" {% if selected_sort == 'price_asc' %}selected{% endif %}>Preço ↑</option>
                 <option value="price_desc" {% if selected_sort == 'price_desc' %}selected{% endif %}>Preço ↓</option>
@@ -316,98 +508,92 @@
           </div>
         </div>
         
-        <div class="row">
-          {% if books %}
+        {% if books %}
+          <div class="catalog-stats">
+            <p><i class="bi bi-info-circle me-2"></i>{{ books|length }} livros encontrados</p>
+          </div>
+          
+          <div class="books-grid">
             {% for book in books %}
-            <div class="col-md-6 col-lg-4 mb-4">
-              <div class="card book-card h-100">
+              <div class="book-card">
                 <a href="{% url 'book_detail' book.id %}">
                   {% if book.image %}
-                    <img src="{{ book.image.url }}" class="card-img-top book-cover" alt="{{ book.title }}">
+                    <img src="{{ book.image.url }}" class="book-cover" alt="{{ book.title }}">
                   {% else %}
-                    <img src="{% static 'images/book_placeholder.jpg' %}" class="card-img-top book-cover" alt="{{ book.title }}">
+                    <img src="{% static 'images/book_placeholder.jpg' %}" class="book-cover" alt="{{ book.title }}">
                   {% endif %}
                 </a>
-                <div class="card-body book-card-body d-flex flex-column">
+                <div class="book-card-body">
                   <h5 class="book-title">
-                    <a href="{% url 'book_detail' book.id %}" class="text-decoration-none">{{ book.title }}</a>
+                    <a href="{% url 'book_detail' book.id %}">{{ book.title }}</a>
                   </h5>
                   <p class="book-author">{{ book.author }}</p>
                   <p class="book-price">{{ book.formatted_price }}</p>
                   
                   <!-- Rating display -->
-                  <div class="mb-3">
-                    {% if book.avg_rating and book.avg_rating > 0 %}
-                      <div class="ratings">
-                        <!-- Manual star display based on rounded rating -->
+                  <div class="book-rating">
+                    <div class="rating-stars">
+                      {% if book.avg_rating and book.avg_rating > 0 %}
                         {% if book.avg_rating >= 1 %}
                           <i class="bi bi-star-fill text-warning"></i>
                         {% else %}
                           <i class="bi bi-star text-muted"></i>
                         {% endif %}
-                        
                         {% if book.avg_rating >= 2 %}
                           <i class="bi bi-star-fill text-warning"></i>
                         {% else %}
                           <i class="bi bi-star text-muted"></i>
                         {% endif %}
-                        
                         {% if book.avg_rating >= 3 %}
                           <i class="bi bi-star-fill text-warning"></i>
                         {% else %}
                           <i class="bi bi-star text-muted"></i>
                         {% endif %}
-                        
                         {% if book.avg_rating >= 4 %}
                           <i class="bi bi-star-fill text-warning"></i>
                         {% else %}
                           <i class="bi bi-star text-muted"></i>
                         {% endif %}
-                        
                         {% if book.avg_rating >= 5 %}
                           <i class="bi bi-star-fill text-warning"></i>
                         {% else %}
                           <i class="bi bi-star text-muted"></i>
                         {% endif %}
-                        
-                        {% comment %} <span class="ms-2">{{ book.avg_rating|floatformat:1 }} de 5 ({{ book.reviews.count }} avaliações)</span> {% endcomment %}
-                      </div>
-                    {% else %}
-                      <div class="ratings">
+                      {% else %}
                         <i class="bi bi-star text-muted"></i>
                         <i class="bi bi-star text-muted"></i>
                         <i class="bi bi-star text-muted"></i>
                         <i class="bi bi-star text-muted"></i>
                         <i class="bi bi-star text-muted"></i>
-                        <span class="ms-2 text-muted">Sem avaliações</span>
-                      </div>
-                    {% endif %}
+                      {% endif %}
+                    </div>
+                    <span class="rating-count">
+                      {% if book.avg_rating %}
+                        ({{ book.reviews.count }} avaliações)
+                      {% else %}
+                        (Sem avaliações)
+                      {% endif %}
+                    </span>
                   </div>
                   
-                  <div class="mt-auto">
-                    <button class="btn btn-primary btn-add-cart js-add-to-cart" data-book-id="{{ book.id }}">
-                      <i class="bi bi-cart-plus me-2"></i>Adicionar
-                    </button>
-                  </div>
+                  <button class="btn btn-primary btn-add-cart js-add-to-cart" data-book-id="{{ book.id }}">
+                    <i class="bi bi-cart-plus me-2"></i>Adicionar
+                  </button>
                 </div>
               </div>
-            </div>
             {% endfor %}
-          {% else %}
-            <div class="col-12">
-              <div class="empty-state">
-                <i class="bi bi-book"></i>
-                <h4>Nenhum livro encontrado</h4>
-                <p class="text-muted">Nenhum livro corresponde aos filtros selecionados.</p>
-              </div>
-            </div>
-          {% endif %}
-        </div>
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <i class="bi bi-book"></i>
+            <h4>Nenhum livro encontrado</h4>
+            <p>Nenhum livro corresponde aos filtros selecionados. Tente ajustar os filtros ou explorar outras categorias.</p>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
