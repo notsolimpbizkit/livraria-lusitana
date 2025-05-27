@@ -3,6 +3,54 @@ from django.db.models import Q, Avg
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Book, Category, Review
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+@csrf_exempt
+def get_cart_books(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            cart_items = data.get('cart', [])
+            
+            books_data = []
+            total = 0
+            
+            for item in cart_items:
+                try:
+                    # Convert string ID to integer
+                    book_id = int(item['bookId'])
+                    book = Book.objects.get(id=book_id)
+                    
+                    # Use price_cents instead of price
+                    price = book.price_cents / 100  # Convert cents to euros
+                    subtotal = price * item['quantity']
+                    total += subtotal
+                    
+                    books_data.append({
+                        'id': book.id,
+                        'title': book.title,
+                        'price': price,
+                        'formatted_price': f"€{price:.2f}",  # Format price manually
+                        'quantity': item['quantity'],
+                        'subtotal': subtotal
+                    })
+                except (Book.DoesNotExist, ValueError, KeyError) as e:
+                    print(f"Error processing item {item}: {e}")
+                    continue
+            
+            return JsonResponse({
+                'books': books_data,
+                'total': total,
+                'formatted_total': f"€{total:.2f}"
+            })
+        except Exception as e:
+            print(f"Cart API Error: {e}")
+            return JsonResponse({'error': str(e)})
+    
+    return JsonResponse({'error': 'Invalid method'})
 
 def book_list(request):
     # Get base queryset

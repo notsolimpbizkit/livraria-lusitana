@@ -65,18 +65,85 @@ export function removeFromCart(bookId) {
   return false;
 }
 
-// Generate cart HTML - modified for Django
-export function generateCartHTML() {
+// Replace your generateCartHTML function with this debug version
+export async function generateCartHTML() {
+  console.log('=== DEBUG: generateCartHTML called ===');
+  console.log('Cart contents:', cart);
+  
   if (cart.length === 0) {
+    console.log('Cart is empty');
     return `<div class="empty-cart-message">Seu carrinho está vazio</div>`;
   }
   
+  try {
+    console.log('Fetching from: /books/get-cart-books/');
+    console.log('Sending cart data:', JSON.stringify({ cart: cart }));
+    
+    const response = await fetch('/books/get-cart-books/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cart: cart })
+    });
+    
+    console.log('Response status:', response.status);
+    console.log('Response ok:', response.ok);
+    
+    const data = await response.json();
+    console.log('API Response data:', data);
+    
+    if (data.books && data.books.length > 0) {
+      console.log('SUCCESS: Building HTML for', data.books.length, 'books');
+      
+      let cartHTML = '<ul class="cart-items">';
+      
+      data.books.forEach(book => {
+        cartHTML += `
+          <li class="cart-item" data-book-id="${book.id}">
+            <div class="cart-item-info">
+              <div class="cart-item-details">
+                <h6 class="cart-item-title">${book.title}</h6>
+                <div class="cart-item-price">${book.formatted_price} x ${book.quantity} = €${book.subtotal.toFixed(2)}</div>
+              </div>
+            </div>
+            <div class="cart-item-actions">
+              <button class="btn btn-sm btn-outline-danger js-remove-from-cart" data-book-id="${book.id}">
+                <i class="bi bi-dash"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-primary js-add-to-cart" data-book-id="${book.id}">
+                <i class="bi bi-plus"></i>
+              </button>
+            </div>
+          </li>
+        `;
+      });
+      
+      cartHTML += `
+        </ul>
+        <div class="cart-total">
+          <strong>Total: ${data.formatted_total}</strong>
+        </div>
+        <div class="cart-actions">
+          <a href="/checkout/" class="btn btn-success w-100">Finalizar Compra</a>
+        </div>
+      `;
+      
+      console.log('Generated cart HTML successfully');
+      return cartHTML;
+    } else {
+      console.log('No books in API response, using fallback');
+    }
+  } catch (error) {
+    console.error('Cart API Error:', error);
+  }
+  
+  console.log('Using fallback HTML');
+  
+  // Fallback to original display
   let cartHTML = '<ul class="cart-items">';
-  let totalCents = 0;
   
   cart.forEach(item => {
-    // Note: In a real Django app, you'd fetch book data from the server
-    // This is a simplified version that we'll replace later
     cartHTML += `
       <li class="cart-item" data-book-id="${item.bookId}">
         <div class="cart-item-info">
@@ -108,7 +175,7 @@ export function generateCartHTML() {
 }
 
 // Create and display cart overlay
-export function showCartOverlay() {
+export async function showCartOverlay() {
   // Remove existing overlay if it exists
   const existingOverlay = document.querySelector('.cart-overlay');
   if (existingOverlay) {
@@ -116,7 +183,7 @@ export function showCartOverlay() {
     return;
   }
   
-  // Create overlay
+  // Create overlay with loading message first
   const overlay = document.createElement('div');
   overlay.className = 'cart-overlay';
   overlay.innerHTML = `
@@ -126,12 +193,16 @@ export function showCartOverlay() {
         <button class="btn-close js-close-cart"></button>
       </div>
       <div class="cart-overlay-body">
-        ${generateCartHTML()}
+        <div class="loading">Carregando...</div>
       </div>
     </div>
   `;
   
   document.body.appendChild(overlay);
+  
+  // Load the actual cart content
+  const cartHTML = await generateCartHTML();
+  overlay.querySelector('.cart-overlay-body').innerHTML = cartHTML;
   
   // Add event listeners
   document.querySelector('.js-close-cart').addEventListener('click', () => {
@@ -167,10 +238,13 @@ export function showCartOverlay() {
 }
 
 // Update the cart overlay contents
-function updateCartDisplay() {
+async function updateCartDisplay() {
   const cartBody = document.querySelector('.cart-overlay-body');
   if (cartBody) {
-    cartBody.innerHTML = generateCartHTML();
+    cartBody.innerHTML = '<div class="loading">Atualizando...</div>';
+    
+    const cartHTML = await generateCartHTML();
+    cartBody.innerHTML = cartHTML;
     
     // Re-add event listeners
     const addButtons = cartBody.querySelectorAll('.js-add-to-cart');
