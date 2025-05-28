@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contato - Livraria Lusitana{% endblock %}
+
+{% block extra_css %}
+<style>
+  .contact-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+    padding: 3rem 0;
+  }
+  
+  .contact-card {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(139, 94, 59, 0.2);
+    overflow: hidden;
+    border: none;
+  }
+  
+  .contact-header {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .contact-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    animation: shimmer 6s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  }
+  
+  .contact-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .contact-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .contact-icon {
+    font-size: 4rem;
+    opacity: 0.8;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .contact-body {
+    padding: 3rem 2.5rem;
+  }
+  
+  .form-floating {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-floating > .form-control,
+  .form-floating > .form-select {
+    border: 2px solid #e8dcc8;
+    border-radius: 15px;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .form-floating > .form-control:focus,
+  .form-floating > .form-select:focus {
+    border-color: #8b5e3b;
+    box-shadow: 0 0 0 0.25rem rgba(139, 94, 59, 0.25);
+  }
+  
+  .form-floating > label {
+    color: #8b5e3b;
+    font-weight: 600;
+    padding: 1rem 1.2rem;
+  }
+  
+  .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a67c5a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  }
+  
+  .submit-btn {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 1rem 3rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.3);
+    width: 100%;
+  }
+  
+  .submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 94, 59, 0.4);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+  }
+  
+  .submit-btn:disabled {
+    opacity: 0.7;
+    transform: none;
+    cursor: not-allowed;
+  }
+  
+  .contact-info {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 2rem;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .contact-info h5 {
+    color: #8b5e3b;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    background: rgba(139, 94, 59, 0.05);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+  }
+  
+  .info-item:hover {
+    transform: translateX(5px);
+  }
+  
+  .info-item i {
+    color: #8b5e3b;
+    font-size: 1.3rem;
+    margin-right: 1rem;
+    width: 25px;
+    text-align: center;
+  }
+  
+  .info-item span {
+    color: #2c3e50;
+    font-weight: 500;
+  }
+  
+  .alert {
+    border-radius: 15px;
+    border: none;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+  }
+  
+  .alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+  }
+  
+  @media (max-width: 768px) {
+    .contact-header {
+      padding: 2rem 1.5rem;
+    }
+    
+    .contact-title {
+      font-size: 2rem;
+    }
+    
+    .contact-body {
+      padding: 2rem 1.5rem;
+    }
+    
+    .submit-btn {
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="contact-card">
+          <div class="contact-header">
+            <div class="contact-icon">📧</div>
+            <h1 class="contact-title">Entre em Contato</h1>
+            <p class="contact-subtitle">Estamos aqui para ajudar! Envie-nos uma mensagem</p>
+          </div>
+          
+          <div class="contact-body">
+            <!-- Messages -->
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  <i class="bi bi-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+            
+            <!-- Contact Form -->
+            <form method="post" id="contact-form">
+              {% csrf_token %}
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    {{ form.name }}
+                    <label for="{{ form.name.id_for_label }}">
+                      <i class="bi bi-person me-2"></i>Nome Completo *
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    {{ form.email }}
+                    <label for="{{ form.email.id_for_label }}">
+                      <i class="bi bi-envelope me-2"></i>Email *
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-floating">
+                {{ form.subject }}
+                <label for="{{ form.subject.id_for_label }}">
+                  <i class="bi bi-tag me-2"></i>Assunto *
+                </label>
+              </div>
+              
+              <div class="form-floating">
+                {{ form.message }}
+                <label for="{{ form.message.id_for_label }}">
+                  <i class="bi bi-chat-left-text me-2"></i>Mensagem *
+                </label>
+              </div>
+              
+              <button type="submit" class="btn btn-primary submit-btn" id="submit-btn">
+                <i class="bi bi-send me-2"></i>Enviar Mensagem
+              </button>
+            </form>
+            
+            <!-- Contact Information -->
+            <div class="contact-info">
+              <h5><i class="bi bi-info-circle me-2"></i>Outras Formas de Contato</h5>
+              
+              <div class="info-item">
+                <i class="bi bi-envelope-fill"></i>
+                <span>contato@livrarialusitana.com</span>
+              </div>
+              
+              <div class="info-item">
+                <i class="bi bi-telephone-fill"></i>
+                <span>+351 123 456 789</span>
+              </div>
+              
+              <div class="info-item">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Rua dos Livros, 123 - Lisboa, Portugal</span>
+              </div>
+              
+              <div class="info-item">
+                <i class="bi bi-clock-fill"></i>
+                <span>Segunda a Sexta: 9h às 18h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('submit-btn');
+  
+  form.addEventListener('submit', function(e) {
+    // Disable submit button to prevent double submission
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+    
+    // Re-enable after 3 seconds in case of error
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="bi bi-send me-2"></i>Enviar Mensagem';
+    }, 3000);
+  });
+  
+  // Auto-dismiss alerts after 5 seconds
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      if (alert.classList.contains('show')) {
+        alert.classList.remove('show');
+        alert.classList.add('fade');
+      }
+    });
+  }, 5000);
+});
+</script>
+{% endblock %}

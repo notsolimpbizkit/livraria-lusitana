@@ -13,6 +13,7 @@ urlpatterns = [
     path('checkout/', include('checkout.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('users/', include('users.urls')),
+    path('contato/', include('contact.urls')),
     # We'll add more URLs later
 ]
 
