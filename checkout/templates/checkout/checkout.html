@@ -1,184 +1,341 @@
-<!-- File path checkout/templates/checkout/checkout.html-->
-
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Checkout - Livraria Lusitana{% endblock %}
 
-{% block content %}
-<div class="container my-5">
-  <h2 class="mb-4">Finalizar Compra</h2>
+{% block extra_css %}
+<style>
+  .checkout-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
   
-  <div class="row">
-    <div class="col-md-7">
-      <form id="checkout-form" action="{% url 'process_order' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="cart_items" id="cart-items-input">
-        
-        <div class="mb-3">
-          <label class="form-label">Nome Completo</label>
-          <input type="text" class="form-control" name="name" value="{{ user.get_full_name }}" required>
-        </div>
-        
-        <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
-        </div>
-        
-        <div class="mb-3">
-          <label class="form-label">Endereço</label>
-          <input type="text" class="form-control" name="address" value="{{ user.profile.address }}" required>
-        </div>
-        
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Cidade</label>
-            <input type="text" class="form-control" name="city" value="{{ user.profile.city }}" required>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Código Postal</label>
-            <input type="text" class="form-control" name="postal_code" value="{{ user.profile.postal_code }}" required>
-          </div>
-        </div>
-        
-        <div class="mb-3">
-          <label class="form-label">Método de Pagamento</label>
-          <select class="form-select" name="payment_method">
-            <option>Cartão de Crédito</option>
-            <option>MBWay</option>
-            <option>Referência Multibanco</option>
-          </select>
-        </div>
-        
-        <button type="submit" class="btn btn-success">Confirmar Pedido</button>
-      </form>
-    </div>
+  .checkout-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .checkout-title {
+    color: #8b5e3b;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .order-summary {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border-left: 5px solid #8b5e3b;
+  }
+  
+  .summary-title {
+    color: #8b5e3b;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .cart-item:last-child {
+    border-bottom: none;
+  }
+  
+  .item-details h6 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 0.95rem;
+  }
+  
+  .item-details small {
+    color: #6c757d;
+  }
+  
+  .item-price {
+    font-weight: 600;
+    color: #27ae60;
+  }
+  
+  .total-section {
+    border-top: 2px solid #8b5e3b;
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .total-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #8b5e3b;
+  }
+  
+  .empty-cart {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+  }
+  
+  .empty-cart i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  
+  .paypal-container {
+    margin-top: 2rem;
+  }
+  
+  .loading-spinner {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+  }
+  
+  .success-message {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .error-message {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+</style>
+{% endblock %}
 
-    <div class="col-md-5">
-      <div class="card">
-        <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Resumo do Pedido</h4>
-        </div>
-        <ul class="list-group list-group-flush js-checkout-summary">
-          <!-- Will be filled by JavaScript -->
-          <li class="list-group-item text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+{% block content %}
+<div class="checkout-container">
+  <div class="container">
+    <div class="checkout-card">
+      <h2 class="checkout-title">
+        <i class="bi bi-credit-card-2-front me-3"></i>Finalizar Compra
+      </h2>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <h4 class="summary-title">
+              <i class="bi bi-cart3 me-2"></i>Resumo do Pedido
+            </h4>
+            
+            <div id="cart-summary">
+              <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-2">Carregando itens do carrinho...</p>
+              </div>
             </div>
-            <p class="mt-2">Carregando itens do carrinho...</p>
-          </li>
-        </ul>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <!-- PayPal Payment Section -->
+          <div class="checkout-card">
+            <h4 class="summary-title">
+              <i class="bi bi-credit-card me-2"></i>Pagamento
+            </h4>
+            
+            <div id="payment-messages"></div>
+            
+            <div id="paypal-button-container"></div>
+            
+            <div class="text-center mt-3">
+              <small class="text-muted">
+                <i class="bi bi-shield-check me-1"></i>
+                Pagamento seguro via PayPal
+              </small>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-   
   </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
-<script type="module">
-  import { formatPrice } from '{% static "js/utils/cart-utils.js" %}';
+<!-- PayPal SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=EUR"></script>
+
+<script>
+let cartData = null;
+let totalAmount = 0;
+
+// Load cart data on page load
+document.addEventListener('DOMContentLoaded', function() {
+  loadCartSummary();
+});
+
+async function loadCartSummary() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
   
-  document.addEventListener('DOMContentLoaded', function() {
-    // Get cart items from localStorage
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-    // Store cart in hidden field for form submission
-    document.getElementById('cart-items-input').value = JSON.stringify(cart);
-    
-    // Fetch book details for cart items
-    fetch('{% url "api_cart_items" %}', {
+  if (cart.length === 0) {
+    document.getElementById('cart-summary').innerHTML = `
+      <div class="empty-cart">
+        <i class="bi bi-cart-x"></i>
+        <h5>Seu carrinho está vazio</h5>
+        <p>Adicione alguns livros para finalizar a compra</p>
+        <a href="/books/" class="btn btn-primary">Ver Livros</a>
+      </div>
+    `;
+    return;
+  }
+  
+  try {
+    // Fetch cart data from your API
+    const response = await fetch('/books/get-cart-books/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
       },
-      body: JSON.stringify({ items: cart })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.items && data.items.length > 0) {
-        // Render cart items
-        let checkoutHtml = '';
-        
-        data.items.forEach(item => {
-          checkoutHtml += `
-            <li class="list-group-item d-flex justify-content-between">
-              <div>
-                <span>${item.title}</span>
-                <small class="text-muted d-block">Quantidade: ${item.quantity}</small>
-              </div>
-              <strong>${formatPrice(item.subtotal_cents)}</strong>
-            </li>
-          `;
-        });
-        
-        // Add total
-        checkoutHtml += `
-          <li class="list-group-item d-flex justify-content-between bg-light">
-            <span><strong>Total:</strong></span>
-            <strong>${data.formatted_total}</strong>
-          </li>
-        `;
-        
-        document.querySelector('.js-checkout-summary').innerHTML = checkoutHtml;
-      } else {
-        // Empty cart
-        document.querySelector('.js-checkout-summary').innerHTML = `
-          <li class="list-group-item text-center py-5">
-            <p>Seu carrinho está vazio</p>
-            <a href="{% url 'home' %}" class="btn btn-primary mt-3">Continuar Comprando</a>
-          </li>
-        `;
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.querySelector('.js-checkout-summary').innerHTML = `
-        <li class="list-group-item text-center py-5">
-          <p class="text-danger">Erro ao carregar itens do carrinho</p>
-          <a href="{% url 'home' %}" class="btn btn-primary mt-3">Voltar para a Loja</a>
-        </li>
-      `;
+      body: JSON.stringify({ cart: cart })
     });
     
-    // Handle form submission
-    document.getElementById('checkout-form').addEventListener('submit', function(event) {
-      event.preventDefault();
+    const data = await response.json();
+    cartData = data;
+    
+    if (data.books && data.books.length > 0) {
+      let summaryHTML = '';
       
-      const submitButton = this.querySelector('button[type="submit"]');
-      submitButton.disabled = true;
-      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...';
-      
-      // Submit form data
-      const formData = new FormData(this);
-      
-      fetch(this.action, {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // Clear cart
-          localStorage.removeItem('cart');
-          
-          // Redirect to confirmation page
-          window.location.href = data.redirect_url;
-        } else {
-          alert('Erro: ' + data.error);
-          submitButton.disabled = false;
-          submitButton.textContent = 'Confirmar Pedido';
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Ocorreu um erro ao processar o pedido. Tente novamente.');
-        submitButton.disabled = false;
-        submitButton.textContent = 'Confirmar Pedido';
+      data.books.forEach(book => {
+        summaryHTML += `
+          <div class="cart-item">
+            <div class="item-details">
+              <h6>${book.title}</h6>
+              <small>Quantidade: ${book.quantity}</small>
+            </div>
+            <div class="item-price">€${book.subtotal.toFixed(2)}</div>
+          </div>
+        `;
       });
+      
+      summaryHTML += `
+        <div class="total-section">
+          <div class="d-flex justify-content-between">
+            <span class="total-price">Total:</span>
+            <span class="total-price">${data.formatted_total}</span>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('cart-summary').innerHTML = summaryHTML;
+      totalAmount = data.total;
+      
+      // Initialize PayPal after we have the total
+      initializePayPal();
+    }
+  } catch (error) {
+    console.error('Error loading cart:', error);
+    showMessage('Erro ao carregar itens do carrinho', 'error');
+  }
+}
+
+function initializePayPal() {
+  if (totalAmount <= 0) return;
+  
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: totalAmount.toFixed(2),
+            currency_code: 'EUR'
+          },
+          description: 'Compra de livros - Livraria Lusitana'
+        }]
+      });
+    },
+    
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        // Payment successful
+        processPayment(details, data);
+      });
+    },
+    
+    onError: function(err) {
+      console.error('PayPal Error:', err);
+      showMessage('Erro no pagamento PayPal. Tente novamente.', 'error');
+    },
+    
+    onCancel: function(data) {
+      showMessage('Pagamento cancelado.', 'error');
+    }
+    
+  }).render('#paypal-button-container');
+}
+
+async function processPayment(paypalDetails, paypalData) {
+  try {
+    showMessage('Processando pagamento...', 'info');
+    
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    const response = await fetch('/checkout/process-paypal/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        payment_id: paypalDetails.id,
+        payer_id: paypalDetails.payer.payer_id,
+        amount: totalAmount,
+        cart_items: cart,
+        paypal_details: paypalDetails
+      })
     });
-  });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Clear cart
+      localStorage.removeItem('cart');
+      
+      // Show success message
+      showMessage(`Pagamento realizado com sucesso! Pedido: ${result.order_id}`, 'success');
+      
+      // Redirect after delay
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 3000);
+      
+    } else {
+      showMessage('Erro ao processar pagamento: ' + result.error, 'error');
+    }
+    
+  } catch (error) {
+    console.error('Error processing payment:', error);
+    showMessage('Erro ao processar pagamento. Tente novamente.', 'error');
+  }
+}
+
+function showMessage(message, type) {
+  const messagesDiv = document.getElementById('payment-messages');
+  const className = type === 'success' ? 'success-message' : 
+                   type === 'error' ? 'error-message' : 'info-message';
+  
+  messagesDiv.innerHTML = `<div class="${className}">${message}</div>`;
+}
 </script>
 {% endblock %}

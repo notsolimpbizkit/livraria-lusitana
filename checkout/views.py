@@ -3,11 +3,18 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from books.models import Book
 from orders.models import Order, OrderItem
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 import json
 
 @login_required
 def checkout(request):
-    return render(request, 'checkout/checkout.html')
+    """Display checkout page"""
+    context = {
+        'paypal_client_id': settings.PAYPAL_CLIENT_ID,
+        'paypal_environment': settings.PAYPAL_ENVIRONMENT,
+    }
+    return render(request, 'checkout/checkout.html', context)
 
 @login_required
 def process_order(request):
@@ -84,3 +91,39 @@ def process_order(request):
             return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+def process_paypal_payment(request):
+    """Process PayPal payment"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            # Get payment details from PayPal
+            payment_id = data.get('payment_id')
+            payer_id = data.get('payer_id')
+            amount = data.get('amount')
+            cart_items = data.get('cart_items', [])
+            
+            # Here you would:
+            # 1. Verify the payment with PayPal API (optional but recommended)
+            # 2. Create order in your database
+            # 3. Clear the cart
+            # 4. Send confirmation email
+            
+            # For now, let's just create a simple response
+            order_id = f"ORDER-{payment_id[-8:]}"  # Simple order ID generation
+            
+            return JsonResponse({
+                'success': True,
+                'order_id': order_id,
+                'message': 'Payment processed successfully!'
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
+    
+    return JsonResponse({'success': False, 'error': 'Invalid method'})

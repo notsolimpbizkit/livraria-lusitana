@@ -158,3 +158,6 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
 }
+
+PAYPAL_CLIENT_ID = 'ATtgwS2KGGaV0uru-nXVR-V1Uo2Czbkmv0CElSGnyggphXgkQnq3Qggul88xVAcBkdT0keWvKh5FiuAZ'
+PAYPAL_ENVIRONMENT = 'sandbox'
