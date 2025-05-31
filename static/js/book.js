@@ -58,8 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wishlistButton.addEventListener('click', () => {
             const bookId = wishlistButton.dataset.bookId;
             
-            // Send request to add to wishlist
-            fetch('/api/wishlist/add/', {
+            fetch('/users/wishlist/add/', {  // Add the /users/ prefix
                 method: 'POST',
                 body: JSON.stringify({ book_id: bookId }),
                 headers: {

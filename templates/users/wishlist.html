@@ -3,46 +3,356 @@
 
 {% block title %}Lista de Desejos - Livraria Lusitana{% endblock %}
 
-{% block content %}
-<div class="container my-5">
-  <h2 class="mb-4">Minha Lista de Desejos</h2>
+{% block extra_css %}
+<style>
+  .wishlist-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
   
-  {% if user.wishlist_items.all %}
-  <div class="row">
-    {% for item in user.wishlist_items.all %}
-    <div class="col-md-3 mb-4">
-      <div class="card">
-        <a href="{% url 'book_detail' item.book.id %}">
-          <img src="{{ item.book.image.url }}" class="card-img-top" alt="{{ item.book.title }}">
-        </a>
-        <div class="card-body">
-          <h5 class="card-title">{{ item.book.title }}</h5>
-          <p class="card-text">{{ item.book.formatted_price }}</p>
-          <div class="d-flex justify-content-between">
-            <button class="btn btn-sm btn-primary js-add-to-cart" data-book-id="{{ item.book.id }}">
-              Adicionar ao Carrinho
-            </button>
-            <form method="post" action="{% url 'remove_from_wishlist' item.book.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-danger">
-                <i class="bi bi-trash"></i>
-              </button>
-            </form>
+  .wishlist-container .container-fluid {
+    padding: 0 3rem; /* Use container-fluid with custom padding */
+  }
+  
+  .wishlist-header {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .wishlist-title {
+    color: #8b5e3b;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .wishlist-subtitle {
+    color: #6c757d;
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+  }
+  
+  .wishlist-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    width: 100%; /* Force card to take full width */
+  }
+  
+  .wishlist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(139, 94, 59, 0.3);
+  }
+  
+  .wishlist-card .card-img-top {
+    height: 300px;
+    width: 100%; /* Force image to take full width */
+    object-fit: cover;
+    transition: all 0.3s ease;
+  }
+  
+  .wishlist-card:hover .card-img-top {
+    transform: scale(1.05);
+  }
+  
+  .wishlist-card .card-body {
+    padding: 2rem; /* Increased padding */
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Force card body to take full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+  
+  .wishlist-card .card-title {
+    color: #8b5e3b;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    height: 3rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  
+  .wishlist-card .card-text {
+    color: #198754;
+    font-family: 'Crimson Text', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .wishlist-actions {
+    margin-top: auto;
+    display: flex;
+    gap: 0.8rem;
+    align-items: stretch; /* Make buttons same height */
+    justify-content: center; /* Center the buttons */
+  }
+  
+  .btn-add-cart {
+    background: linear-gradient(135deg, #8b5e3b 0%, #6b4423 100%);
+    border: none;
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 25px;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn-add-cart:hover {
+    background: linear-gradient(135deg, #6b4423 0%, #4a2c17 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 94, 59, 0.3);
+  }
+  
+  .btn-remove {
+    background: #dc3545;
+    border: none;
+    color: white;
+    padding: 0.8rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+  }
+  
+  .btn-remove:hover {
+    background: #bb2d3b;
+    color: white;
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  }
+  
+  .empty-wishlist {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.2);
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  
+  .empty-wishlist .empty-icon {
+    font-size: 5rem;
+    color: #8b5e3b;
+    margin-bottom: 1.5rem;
+  }
+  
+  .empty-wishlist h4 {
+    color: #8b5e3b;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+  }
+  
+  .empty-wishlist p {
+    color: #6c757d;
+    font-family: 'Crimson Text', serif;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .btn-explore {
+    background: linear-gradient(135deg, #8b5e3b 0%, #6b4423 100%);
+    border: none;
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 25px;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .btn-explore:hover {
+    background: linear-gradient(135deg, #6b4423 0%, #4a2c17 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(139, 94, 59, 0.4);
+  }
+  
+  .wishlist-stats {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .stats-item {
+    text-align: center;
+    font-family: 'Libre Baskerville', serif;
+  }
+  
+  .stats-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #8b5e3b;
+  }
+  
+  .stats-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .wishlist-container .container-fluid {
+      padding: 0 1rem; /* Smaller padding on mobile */
+    }
+    
+    .wishlist-title {
+      font-size: 2rem;
+    }
+    
+    .wishlist-subtitle {
+      font-size: 1rem;
+    }
+    
+    .wishlist-card .card-img-top {
+      height: 250px;
+    }
+    
+    .wishlist-card .card-body {
+      padding: 1.5rem; /* Smaller padding on mobile */
+    }
+    
+    .wishlist-actions {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    
+    .btn-remove {
+      width: 100%;
+      border-radius: 25px;
+      height: auto;
+      padding: 0.8rem;
+    }
+    
+    .empty-wishlist {
+      padding: 3rem 1rem;
+    }
+    
+    .empty-wishlist .empty-icon {
+      font-size: 4rem;
+    }
+    
+    .empty-wishlist h4 {
+      font-size: 1.5rem;
+    }
+    
+    .wishlist-stats {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wishlist-container">
+  <div class="container-fluid">
+    <!-- Page Header -->
+    <div class="wishlist-header">
+      <h2 class="wishlist-title">
+        <i class="bi bi-heart-fill me-3"></i>Minha Lista de Desejos
+      </h2>
+      <p class="wishlist-subtitle">Os livros que tocaram o seu coração</p>
+    </div>
+    
+    {% if user.wishlist_items.all %}
+      <!-- Stats -->
+      <div class="wishlist-stats">
+        <div class="stats-item">
+          <div class="stats-number">{{ user.wishlist_items.count }}</div>
+          <div class="stats-label">
+            {% if user.wishlist_items.count == 1 %}
+              Livro Favorito
+            {% else %}
+              Livros Favoritos
+            {% endif %}
           </div>
         </div>
       </div>
-    </div>
-    {% endfor %}
+      
+      <!-- Books Grid -->
+      <div class="row g-4">
+        {% for item in user.wishlist_items.all %}
+        <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex">
+          <div class="card wishlist-card w-100">
+            <a href="{% url 'book_detail' item.book.id %}">
+              <img src="{{ item.book.image.url }}" class="card-img-top" alt="{{ item.book.title }}">
+            </a>
+            <div class="card-body">
+              <h5 class="card-title">{{ item.book.title }}</h5>
+              <p class="card-text">{{ item.book.formatted_price }}</p>
+              <div class="wishlist-actions">
+                <button class="btn btn-add-cart js-add-to-cart" data-book-id="{{ item.book.id }}">
+                  <i class="bi bi-cart-plus me-2"></i>Adicionar ao Carrinho
+                </button>
+                <form method="post" action="{% url 'remove_from_wishlist' item.book.id %}" style="margin: 0;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-remove" title="Remover da lista de desejos">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <!-- Empty State -->
+      <div class="empty-wishlist">
+        <i class="bi bi-heart empty-icon"></i>
+        <h4>Sua lista de desejos está vazia</h4>
+        <p>Descubra livros incríveis e adicione-os à sua lista de desejos. Quando encontrar algo especial, clique no coração para guardar para mais tarde.</p>
+        <a href="{% url 'book_list' %}" class="btn-explore">
+          <i class="bi bi-book me-2"></i>Explorar Livros
+        </a>
+      </div>
+    {% endif %}
   </div>
-  {% else %}
-  <div class="card">
-    <div class="card-body text-center py-5">
-      <i class="bi bi-heart display-1 text-muted"></i>
-      <h4 class="mt-3">Sua lista de desejos está vazia</h4>
-      <p>Marque os livros que você gosta como favoritos para adicioná-los à sua lista de desejos.</p>
-      <a href="{% url 'book_list' %}" class="btn btn-primary mt-3">Explorar Livros</a>
-    </div>
-  </div>
-  {% endif %}
 </div>
 {% endblock %}
