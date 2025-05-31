@@ -1,72 +1,515 @@
-<!-- templates/users/profile.html -->
 {% extends 'base.html' %}
 
 {% block title %}Meu Perfil - Livraria Lusitana{% endblock %}
 
-{% block content %}
-<div class="container my-5">
-  <h2 class="mb-4">Meu Perfil</h2>
+{% block extra_css %}
+<style>
+  .profile-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+    padding: 3rem 0;
+  }
   
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Informações Pessoais</h4>
-        </div>
-        <div class="card-body">
-          <p><strong>Nome de Usuário:</strong> {{ user.username }}</p>
-          <p><strong>Email:</strong> {{ user.email|default:"Não definido" }}</p>
-          <p><strong>Membro desde:</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
-          <a href="#" class="btn btn-outline-primary">Editar Informações</a>
+  .profile-header {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(139, 94, 59, 0.2);
+    padding: 0;
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+  }
+  
+  .profile-banner {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    color: white;
+    padding: 3rem 2.5rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .profile-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    animation: shimmer 6s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  }
+  
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .profile-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .profile-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .profile-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.15);
+    padding: 0;
+    margin-bottom: 2rem;
+    border: none;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(139, 94, 59, 0.2);
+  }
+  
+  .card-header-custom {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-bottom: 3px solid #8b5e3b;
+    padding: 1.8rem 2rem;
+  }
+  
+  .card-title-custom {
+    color: #8b5e3b;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .card-title-custom i {
+    margin-right: 0.8rem;
+    font-size: 1.5rem;
+    color: #a67c5a;
+  }
+  
+  .card-body-custom {
+    padding: 2rem;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.3s ease;
+  }
+  
+  .info-item:last-child {
+    border-bottom: none;
+  }
+  
+  .info-item:hover {
+    background-color: rgba(139, 94, 59, 0.03);
+    border-radius: 10px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .info-label {
+    font-weight: 600;
+    color: #8b5e3b;
+    min-width: 140px;
+    font-size: 0.95rem;
+  }
+  
+  .info-value {
+    color: #2c3e50;
+    font-size: 0.95rem;
+  }
+  
+  .info-empty {
+    color: #6c757d;
+    font-style: italic;
+  }
+  
+  .btn-custom {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(139, 94, 59, 0.3);
+  }
+  
+  .btn-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.4);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .btn-outline-custom {
+    background: transparent;
+    border: 2px solid #8b5e3b;
+    color: #8b5e3b;
+    box-shadow: none;
+  }
+  
+  .btn-outline-custom:hover {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border-color: #8b5e3b;
+    color: white;
+  }
+  
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .quick-link {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid #e8dcc8;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #8b5e3b;
+  }
+  
+  .quick-link:hover {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border-color: #8b5e3b;
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(139, 94, 59, 0.3);
+    text-decoration: none;
+  }
+  
+  .quick-link i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .quick-link:hover i {
+    transform: scale(1.1);
+  }
+  
+  .quick-link span {
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .logout-form {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .quick-link-logout {
+    background: linear-gradient(135deg, #f8d7da 0%, #ffffff 100%);
+    border: 2px solid #dc3545;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #dc3545;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  .quick-link-logout:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border-color: #dc3545;
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+    text-decoration: none;
+  }
+  
+  .quick-link-logout i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .quick-link-logout:hover i {
+    transform: scale(1.1);
+  }
+  
+  .quick-link-logout span {
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stat-item {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    border-left: 4px solid #8b5e3b;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #8b5e3b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-banner {
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    
+    .profile-title {
+      font-size: 1.8rem;
+    }
+    
+    .card-body-custom {
+      padding: 1.5rem;
+    }
+    
+    .quick-links {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .quick-link {
+      padding: 1rem;
+    }
+    
+    .quick-link i {
+      font-size: 2rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-banner">
+        <div class="row align-items-center">
+          <div class="col-md-3 text-center text-md-start">
+            <div class="profile-avatar">
+              <i class="bi bi-person-fill"></i>
+            </div>
+          </div>
+          <div class="col-md-9">
+            <h1 class="profile-title">Olá, {{ user.get_full_name|default:user.username }}!</h1>
+            <p class="profile-subtitle">
+              <i class="bi bi-calendar3 me-2"></i>
+              Membro desde {{ user.date_joined|date:"d/m/Y" }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
-    
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Endereço</h4>
-        </div>
-        <div class="card-body">
-          {% if user.profile.address %}
-          <p><strong>Endereço:</strong> {{ user.profile.address }}</p>
-          <p><strong>Cidade:</strong> {{ user.profile.city }}</p>
-          <p><strong>Código Postal:</strong> {{ user.profile.postal_code }}</p>
-          <p><strong>Telefone:</strong> {{ user.profile.phone|default:"Não definido" }}</p>
-          {% else %}
-          <p>Você ainda não cadastrou seu endereço.</p>
-          {% endif %}
-          <a href="#" class="btn btn-outline-primary">Editar Endereço</a>
-        </div>
+
+    <!-- Stats Section -->
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Pedidos</div>
       </div>
-      
-      <div class="card mt-4">
-        <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Links Rápidos</h4>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <a href="{% url 'orders' %}" class="btn btn-outline-primary w-100">
-                <i class="bi bi-box"></i> Meus Pedidos
-              </a>
+      <div class="stat-item">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Favoritos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Avaliações</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Personal Information -->
+      <div class="col-lg-6 mb-4">
+        <div class="profile-card">
+          <div class="card-header-custom">
+            <h4 class="card-title-custom">
+              <i class="bi bi-person-badge"></i>
+              Informações Pessoais
+            </h4>
+          </div>
+          <div class="card-body-custom">
+            <div class="info-item">
+              <span class="info-label">Nome de Usuário:</span>
+              <span class="info-value">{{ user.username }}</span>
             </div>
-            <div class="col-md-6 mb-3">
-              <a href="{% url 'wishlist' %}" class="btn btn-outline-primary w-100">
-                <i class="bi bi-heart"></i> Lista de Desejos
-              </a>
+            <div class="info-item">
+              <span class="info-label">Nome Completo:</span>
+              <span class="info-value {% if not user.get_full_name %}info-empty{% endif %}">
+                {{ user.get_full_name|default:"Não definido" }}
+              </span>
             </div>
-            <div class="col-md-6 mb-3">
-              <a href="{% url 'password_change' %}" class="btn btn-outline-primary w-100">
-                <i class="bi bi-key"></i> Alterar Senha
-              </a>
+            <div class="info-item">
+              <span class="info-label">Email:</span>
+              <span class="info-value {% if not user.email %}info-empty{% endif %}">
+                {{ user.email|default:"Não definido" }}
+              </span>
             </div>
-            <div class="col-md-6 mb-3">
-              <a href="{% url 'logout' %}" class="btn btn-outline-danger w-100">
-                <i class="bi bi-box-arrow-right"></i> Sair
+            <div class="info-item">
+              <span class="info-label">Data de Cadastro:</span>
+              <span class="info-value">{{ user.date_joined|date:"d/m/Y às H:i" }}</span>
+            </div>
+            
+            <div class="mt-3">
+              <a href="#" class="btn-custom">
+                <i class="bi bi-pencil me-2"></i>Editar Informações
               </a>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Address Information -->
+      <div class="col-lg-6 mb-4">
+        <div class="profile-card">
+          <div class="card-header-custom">
+            <h4 class="card-title-custom">
+              <i class="bi bi-geo-alt"></i>
+              Endereço de Entrega
+            </h4>
+          </div>
+          <div class="card-body-custom">
+            {% if user.profile.address %}
+              <div class="info-item">
+                <span class="info-label">Endereço:</span>
+                <span class="info-value">{{ user.profile.address }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Cidade:</span>
+                <span class="info-value">{{ user.profile.city }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Código Postal:</span>
+                <span class="info-value">{{ user.profile.postal_code }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Telefone:</span>
+                <span class="info-value {% if not user.profile.phone %}info-empty{% endif %}">
+                  {{ user.profile.phone|default:"Não definido" }}
+                </span>
+              </div>
+            {% else %}
+              <div class="text-center py-4">
+                <i class="bi bi-house-x" style="font-size: 3rem; color: #e8dcc8; margin-bottom: 1rem;"></i>
+                <p class="info-empty">Você ainda não cadastrou seu endereço de entrega.</p>
+                <p class="text-muted">Adicione seu endereço para facilitar futuras compras.</p>
+              </div>
+            {% endif %}
+            
+            <div class="mt-3">
+              <a href="#" class="btn-outline-custom">
+                <i class="bi bi-plus-circle me-2"></i>
+                {% if user.profile.address %}Editar Endereço{% else %}Adicionar Endereço{% endif %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="profile-card">
+      <div class="card-header-custom">
+        <h4 class="card-title-custom">
+          <i class="bi bi-lightning"></i>
+          Acesso Rápido
+        </h4>
+      </div>
+      <div class="card-body-custom">
+        <div class="quick-links">
+          <a href="{% url 'orders' %}" class="quick-link">
+            <i class="bi bi-box-seam"></i>
+            <span>Meus Pedidos</span>
+          </a>
+          
+          <a href="{% url 'wishlist' %}" class="quick-link">
+            <i class="bi bi-heart"></i>
+            <span>Lista de Desejos</span>
+          </a>
+          
+          <a href="{% url 'password_change' %}" class="quick-link">
+            <i class="bi bi-shield-lock"></i>
+            <span>Alterar Senha</span>
+          </a>
+          
+          <a href="/books/" class="quick-link">
+            <i class="bi bi-book"></i>
+            <span>Explorar Livros</span>
+          </a>
+          
+          <a href="{% url 'contact' %}" class="quick-link">
+            <i class="bi bi-chat-dots"></i>
+            <span>Suporte</span>
+          </a>
+          
+          <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="quick-link" style="background: linear-gradient(135deg, #f8d7da 0%, #ffffff 100%); border: 2px solid #dc3545; color: #dc3545;">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sair da Conta</span>
+            </button>
+          </form>
         </div>
       </div>
     </div>

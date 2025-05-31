@@ -149,7 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_REDIRECT_URL = 'home'  # Redirect to home page after login
-LOGOUT_REDIRECT_URL = 'home'  # Redirect to home page after logout
+LOGOUT_REDIRECT_URL = '/users/logout'  # Redirect to home page after logout
 LOGIN_URL = 'login'  # URL to redirect to when login is required
 
 MESSAGE_TAGS = {

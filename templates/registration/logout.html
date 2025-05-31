@@ -1,16 +1,269 @@
-<!-- templates/registration/logged_out.html -->
 {% extends 'base.html' %}
 
 {% block title %}Saiu - Livraria Lusitana{% endblock %}
 
+{% block extra_css %}
+<style>
+  .logout-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+  
+  .logout-card {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(139, 94, 59, 0.2);
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    overflow: hidden;
+    border: none;
+  }
+  
+  .logout-header {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    color: white;
+    padding: 3rem 2rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .logout-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    animation: shimmer 6s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  }
+  
+  .logout-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+    animation: fadeInDown 0.8s ease;
+  }
+  
+  .logout-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 0.8s ease 0.2s both;
+  }
+  
+  .logout-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 0.8s ease 0.4s both;
+  }
+  
+  .logout-body {
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  
+  .logout-message {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    animation: fadeInUp 0.8s ease 0.6s both;
+  }
+  
+  .logout-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    animation: fadeInUp 0.8s ease 0.8s both;
+  }
+  
+  .btn-custom {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.3);
+  }
+  
+  .btn-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 94, 59, 0.4);
+    background: linear-gradient(135deg, #a67c5a 0%, #8b5e3b 100%);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .btn-outline-custom {
+    background: transparent;
+    border: 2px solid #8b5e3b;
+    color: #8b5e3b;
+    box-shadow: 0 4px 15px rgba(139, 94, 59, 0.2);
+  }
+  
+  .btn-outline-custom:hover {
+    background: linear-gradient(135deg, #8b5e3b 0%, #a67c5a 100%);
+    border-color: #8b5e3b;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(139, 94, 59, 0.3);
+    text-decoration: none;
+  }
+  
+  .feature-highlight {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-left: 4px solid #8b5e3b;
+    animation: fadeInUp 0.8s ease 1s both;
+  }
+  
+  .feature-highlight h6 {
+    color: #8b5e3b;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+  
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .feature-list li {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .feature-list li i {
+    color: #8b5e3b;
+    margin-right: 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .logout-header {
+      padding: 2rem 1.5rem;
+    }
+    
+    .logout-title {
+      font-size: 1.6rem;
+    }
+    
+    .logout-body {
+      padding: 2rem 1.5rem;
+    }
+    
+    .logout-actions {
+      gap: 0.8rem;
+    }
+    
+    .btn-custom {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .logout-actions {
+      flex-direction: row;
+      justify-content: center;
+    }
+    
+    .btn-custom {
+      flex: 1;
+      max-width: 200px;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container my-5 text-center">
-  <i class="bi bi-box-arrow-right display-1 text-muted"></i>
-  <h2 class="mt-4">Você saiu da sua conta</h2>
-  <p class="lead">Obrigado por visitar a Livraria Lusitana.</p>
-  <div class="mt-4">
-    <a href="{% url 'login' %}" class="btn btn-primary">Entrar Novamente</a>
-    <a href="{% url 'home' %}" class="btn btn-outline-primary ms-2">Voltar para a Loja</a>
+<div class="logout-container">
+  <div class="logout-card">
+    <div class="logout-header">
+      <div class="logout-icon">👋</div>
+      <h1 class="logout-title">Até Logo!</h1>
+      <p class="logout-subtitle">Você saiu da sua conta com sucesso</p>
+    </div>
+    
+    <div class="logout-body">
+      <p class="logout-message">
+        Obrigado por visitar a <strong>Livraria Lusitana</strong>.<br>
+        Esperamos vê-lo novamente em breve para descobrir novos livros incríveis!
+      </p>
+      
+      <div class="feature-highlight">
+        <h6><i class="bi bi-lightbulb me-2"></i>Enquanto você está aqui...</h6>
+        <ul class="feature-list">
+          <li><i class="bi bi-circle-fill"></i>Explore nosso catálogo sem precisar fazer login</li>
+          <li><i class="bi bi-circle-fill"></i>Descubra novos lançamentos e ofertas especiais</li>
+          <li><i class="bi bi-circle-fill"></i>Entre em contato conosco se precisar de ajuda</li>
+        </ul>
+      </div>
+      
+      <div class="logout-actions">
+        <a href="{% url 'login' %}" class="btn-custom">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Entrar Novamente
+        </a>
+        <a href="{% url 'home' %}" class="btn-outline-custom">
+          <i class="bi bi-house me-2"></i>Voltar para a Loja
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

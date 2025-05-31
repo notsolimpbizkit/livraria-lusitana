@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth import logout as auth_logout
 
 def register(request):
     if request.method == 'POST':
@@ -40,6 +41,11 @@ def remove_from_wishlist(request, book_id):
     
     return redirect('wishlist')
 
-@login_required
 def logout(request):
-    return render(request, 'registration/logout.html')
+    if request.method == 'POST':
+        auth_logout(request)  # This actually logs the user out
+        messages.success(request, 'Você foi desconectado com sucesso.')
+        return redirect('logout')  # or wherever you want to redirect
+    
+    # If someone tries to access via GET, redirect to home
+    return redirect('home')
