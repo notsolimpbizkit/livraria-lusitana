@@ -30,6 +30,7 @@ def process_paypal_payment(request):
             amount = float(data.get('amount', 0))
             cart_items = data.get('cart_items', [])
             paypal_details = data.get('paypal_details', {})
+            shipping_data = data.get('shipping_data', {})  # New: Get shipping data
             
             if not cart_items:
                 return JsonResponse({
@@ -76,16 +77,15 @@ def process_paypal_payment(request):
                     'error': 'Valor do pagamento não confere com o carrinho'
                 })
             
-            # Create the order in database
+            # Create the order in database with real shipping info
             order = Order.objects.create(
                 user=request.user,
                 total_amount_cents=total_amount_cents,
                 payment_method='paypal',
                 status='processing',  # Since PayPal payment was successful
-                # Store PayPal payment ID in shipping address for now
-                shipping_address=f"PayPal Payment ID: {payment_id}",
-                shipping_city="Lisboa",  # Default
-                shipping_postal_code="1000-001",  # Default
+                shipping_address=shipping_data.get('address', f"PayPal Payment ID: {payment_id}"),
+                shipping_city=shipping_data.get('city', 'Lisboa'),
+                shipping_postal_code=shipping_data.get('postalCode', '1000-001'),
             )
             
             # Create order items and update stock
@@ -101,6 +101,20 @@ def process_paypal_payment(request):
                 book = item['book']
                 book.stock -= item['quantity']
                 book.save()
+            
+            # Optionally save address to user profile
+            if shipping_data.get('saveAddress', False):
+                try:
+                    from users.models import UserProfile
+                    profile, created = UserProfile.objects.get_or_create(user=request.user)
+                    profile.address = shipping_data.get('address', '')
+                    profile.city = shipping_data.get('city', '')
+                    profile.postal_code = shipping_data.get('postalCode', '')
+                    profile.phone = shipping_data.get('phone', '')
+                    profile.save()
+                except Exception as profile_error:
+                    print(f"Error saving profile: {profile_error}")
+                    # Don't fail the order if profile save fails
             
             # Log successful order creation
             print(f"Order created successfully: ID {order.id}, User: {request.user.username}")
