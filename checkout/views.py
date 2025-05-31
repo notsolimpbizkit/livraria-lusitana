@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from books.models import Book
-from orders.models import Order, OrderItem
+from orders.models import Order, OrderItem  # Import from orders app
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import json
@@ -16,56 +16,77 @@ def checkout(request):
     }
     return render(request, 'checkout/checkout.html', context)
 
+@csrf_exempt
 @login_required
-def process_order(request):
+def process_paypal_payment(request):
+    """Process PayPal payment"""
     if request.method == 'POST':
         try:
-            # Parse the cart items from POST
-            cart_items = json.loads(request.POST.get('cart_items', '[]'))
+            data = json.loads(request.body)
             
-            # Get shipping information
-            shipping_address = request.POST.get('address', '')
-            shipping_city = request.POST.get('city', '')
-            shipping_postal_code = request.POST.get('postal_code', '')
-            payment_method = request.POST.get('payment_method', '')
+            # Get payment details from PayPal
+            payment_id = data.get('payment_id')
+            payer_id = data.get('payer_id')
+            amount = float(data.get('amount', 0))
+            cart_items = data.get('cart_items', [])
+            paypal_details = data.get('paypal_details', {})
             
-            if not cart_items or not shipping_address or not shipping_city or not shipping_postal_code:
-                return JsonResponse({'error': 'Informações incompletas'}, status=400)
+            if not cart_items:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Carrinho vazio'
+                })
             
-            # Calculate total
-            total_cents = 0
+            # Convert EUR amount to cents for storage
+            total_amount_cents = int(amount * 100)
+            
+            # Validate cart items and calculate total
             validated_items = []
+            calculated_total_cents = 0
             
             for item in cart_items:
-                book_id = item.get('bookId')
+                book_id = item.get('bookId') or item.get('book_id')
                 quantity = int(item.get('quantity', 1))
                 
                 try:
                     book = Book.objects.get(id=book_id)
                     if book.stock >= quantity:
-                        item_total = book.price_cents * quantity
-                        total_cents += item_total
+                        item_total_cents = book.price_cents * quantity
+                        calculated_total_cents += item_total_cents
                         validated_items.append({
                             'book': book,
                             'quantity': quantity,
                             'price_cents': book.price_cents
                         })
                     else:
-                        return JsonResponse({'error': f'Estoque insuficiente para {book.title}'}, status=400)
+                        return JsonResponse({
+                            'success': False,
+                            'error': f'Estoque insuficiente para {book.title}'
+                        })
                 except Book.DoesNotExist:
-                    return JsonResponse({'error': 'Livro não encontrado'}, status=400)
+                    return JsonResponse({
+                        'success': False,
+                        'error': f'Livro com ID {book_id} não encontrado'
+                    })
             
-            # Create order
-            order = Order(
+            # Verify amount matches (with small tolerance for floating point)
+            if abs(calculated_total_cents - total_amount_cents) > 5:  # 5 cents tolerance
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Valor do pagamento não confere com o carrinho'
+                })
+            
+            # Create the order in database
+            order = Order.objects.create(
                 user=request.user,
-                total_amount_cents=total_cents,
-                shipping_address=shipping_address,
-                shipping_city=shipping_city,
-                shipping_postal_code=shipping_postal_code,
-                payment_method=payment_method,
-                status='pending'
+                total_amount_cents=total_amount_cents,
+                payment_method='paypal',
+                status='processing',  # Since PayPal payment was successful
+                # Store PayPal payment ID in shipping address for now
+                shipping_address=f"PayPal Payment ID: {payment_id}",
+                shipping_city="Lisboa",  # Default
+                shipping_postal_code="1000-001",  # Default
             )
-            order.save()
             
             # Create order items and update stock
             for item in validated_items:
@@ -81,49 +102,26 @@ def process_order(request):
                 book.stock -= item['quantity']
                 book.save()
             
-            return JsonResponse({
-                'success': True,
-                'order_id': order.id,
-                'redirect_url': f'/orders/{order.id}/confirmation/'
-            })
-            
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    
-    return JsonResponse({'error': 'Método não permitido'}, status=405)
-
-@csrf_exempt
-def process_paypal_payment(request):
-    """Process PayPal payment"""
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            
-            # Get payment details from PayPal
-            payment_id = data.get('payment_id')
-            payer_id = data.get('payer_id')
-            amount = data.get('amount')
-            cart_items = data.get('cart_items', [])
-            
-            # Here you would:
-            # 1. Verify the payment with PayPal API (optional but recommended)
-            # 2. Create order in your database
-            # 3. Clear the cart
-            # 4. Send confirmation email
-            
-            # For now, let's just create a simple response
-            order_id = f"ORDER-{payment_id[-8:]}"  # Simple order ID generation
+            # Log successful order creation
+            print(f"Order created successfully: ID {order.id}, User: {request.user.username}")
             
             return JsonResponse({
                 'success': True,
-                'order_id': order_id,
-                'message': 'Payment processed successfully!'
+                'order_id': order.id,  # Real database ID
+                'message': f'Pagamento processado com sucesso! Pedido #{order.id}'
             })
             
         except Exception as e:
+            print(f"Error in process_paypal_payment: {e}")
             return JsonResponse({
                 'success': False,
-                'error': str(e)
+                'error': f'Erro ao processar pagamento: {str(e)}'
             })
     
-    return JsonResponse({'success': False, 'error': 'Invalid method'})
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})
+
+@login_required
+def my_orders(request):
+    """Display user's orders"""
+    orders = Order.objects.filter(user=request.user).order_by('-order_date')
+    return render(request, 'orders/my_orders.html', {'orders': orders})
