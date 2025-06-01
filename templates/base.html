@@ -467,8 +467,8 @@
     </style>
 
     <script>
-    // Modern notification system
-    class CartNotifications {
+// Modern notification system (ONLY for displaying notifications)
+class CartNotifications {
     constructor() {
         this.container = document.getElementById('notification-container');
         this.notifications = new Set();
@@ -481,14 +481,14 @@
         
         // Trigger show animation
         requestAnimationFrame(() => {
-        notification.classList.add('show');
+            notification.classList.add('show');
         });
         
         // Auto-dismiss
         if (duration > 0) {
-        setTimeout(() => {
-            this.hide(notification);
-        }, duration);
+            setTimeout(() => {
+                this.hide(notification);
+            }, duration);
         }
         
         return notification;
@@ -499,23 +499,23 @@
         notification.className = 'cart-notification';
         
         notification.innerHTML = `
-        <div class="notification-icon">
-            <i class="bi bi-cart-plus"></i>
-        </div>
-        <div class="notification-content">
-            <div class="notification-title">${title}</div>
-            <div class="notification-message">${message}</div>
-        </div>
-        <button class="notification-close" aria-label="Fechar">
-            <i class="bi bi-x"></i>
-        </button>
-        <div class="notification-progress"></div>
+            <div class="notification-icon">
+                <i class="bi bi-cart-plus"></i>
+            </div>
+            <div class="notification-content">
+                <div class="notification-title">${title}</div>
+                <div class="notification-message">${message}</div>
+            </div>
+            <button class="notification-close" aria-label="Fechar">
+                <i class="bi bi-x"></i>
+            </button>
+            <div class="notification-progress"></div>
         `;
         
         // Close button functionality
         const closeBtn = notification.querySelector('.notification-close');
         closeBtn.addEventListener('click', () => {
-        this.hide(notification);
+            this.hide(notification);
         });
         
         return notification;
@@ -528,68 +528,18 @@
         notification.classList.add('hide');
         
         setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-        this.notifications.delete(notification);
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+            this.notifications.delete(notification);
         }, 400);
     }
-    
-    // Add item to cart with notification
-    addToCart(bookId, bookTitle) {
-        // Your existing cart logic here
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existingItem = cart.find(item => item.bookId === bookId);
-        
-        if (existingItem) {
-        existingItem.quantity += 1;
-        } else {
-        cart.push({ bookId: bookId, quantity: 1 });
-        }
-        
-        // Always show the same message regardless of condition
-        this.show(
-        'Adicionado ao carrinho',
-        `"${bookTitle}" foi adicionado com sucesso`,
-        3000
-        );
-        
-        localStorage.setItem('cart', JSON.stringify(cart));
-        
-        // Update cart count if you have this function
-        if (typeof updateCartCount === 'function') {
-        updateCartCount();
-        }
-    }
-    }
+}
 
-    // Initialize notification system
-    const cartNotifications = new CartNotifications();
+// Initialize notification system and make it globally available
+window.cartNotifications = new CartNotifications();
 
-    // Update your existing add to cart buttons
-    document.addEventListener('DOMContentLoaded', function() {
-    // Handle add to cart buttons
-    document.addEventListener('click', function(e) {
-        if (e.target.matches('.js-add-to-cart') || e.target.closest('.js-add-to-cart')) {
-        e.preventDefault();
-        
-        const button = e.target.matches('.js-add-to-cart') ? e.target : e.target.closest('.js-add-to-cart');
-        const bookId = button.getAttribute('data-book-id');
-        
-        // Get book title from the card
-        const bookCard = button.closest('.book-card') || button.closest('.wishlist-card') || button.closest('.card');
-        const bookTitle = bookCard ? 
-            (bookCard.querySelector('.book-title a')?.textContent || 
-            bookCard.querySelector('.book-title')?.textContent || 
-            bookCard.querySelector('h5')?.textContent || 
-            'Livro') : 'Livro';
-        
-        if (bookId) {
-            cartNotifications.addToCart(bookId, bookTitle.trim());
-        }
-        }
-    });
-    });
-    </script>
+// That's it! Let cart-utils.js handle all the cart logic
+</script>
 </body>
 </html>

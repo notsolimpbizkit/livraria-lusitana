@@ -1,5 +1,4 @@
 // File path: static/js/utils/cart-utils.js 
-const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Format price from cents to currency
 export function formatPrice(priceCents) {
@@ -9,30 +8,93 @@ export function formatPrice(priceCents) {
   });
 }
 
-// Update cart count in the UI
-// Update cart count in the UI
+// Update cart count in the UI - FIXED to read from localStorage
 export function updateCartCount() {
-  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartCount = currentCart.reduce((acc, item) => acc + item.quantity, 0);
   const cartBadges = document.querySelectorAll('.js-cart-count');
   cartBadges.forEach(badge => {
     badge.textContent = cartCount;
   });
 }
 
+// Show notification function - FIXED to wait for notification system
+function showNotification(message) {
+  // Wait for the notification system to be ready
+  const showNotificationWhenReady = () => {
+    if (window.cartNotifications) {
+      window.cartNotifications.show('Adicionado ao carrinho', message, 3000);
+    } else {
+      // If still not ready after 50ms, try again (max 10 attempts = 500ms total)
+      if (showNotificationWhenReady.attempts < 10) {
+        showNotificationWhenReady.attempts = (showNotificationWhenReady.attempts || 0) + 1;
+        setTimeout(showNotificationWhenReady, 50);
+      } else {
+        // Fallback notification if window.cartNotifications never loads
+        console.log(message);
+        
+        // Create a simple notification element
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification-fallback';
+        notification.textContent = message;
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: white;
+          border: 2px solid #8b5e3b;
+          border-radius: 8px;
+          padding: 1rem;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          transform: translateX(100%);
+          transition: transform 0.3s ease;
+          max-width: 300px;
+          font-family: 'Crimson Text', serif;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Show animation
+        setTimeout(() => {
+          notification.style.transform = 'translateX(0)';
+        }, 10);
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+          notification.style.transform = 'translateX(100%)';
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 300);
+        }, 3000);
+      }
+    }
+  };
+  
+  // Start trying to show notification
+  showNotificationWhenReady();
+}
+
 // Add item to cart
 export function addToCart(bookId) {
-  let matchingBook = cart.find(item => item.bookId === bookId);
+  console.log('Adding to cart:', bookId);
+  
+  // Get current cart from localStorage to avoid stale data
+  const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+  let matchingBook = currentCart.find(item => item.bookId === bookId);
   
   if (matchingBook) {
     matchingBook.quantity += 1;
   } else {
-    cart.push({
+    currentCart.push({
       bookId: bookId,
       quantity: 1
     });
   }
   
-  localStorage.setItem('cart', JSON.stringify(cart));
+  localStorage.setItem('cart', JSON.stringify(currentCart));
   updateCartCount();
   
   // Show notification
@@ -41,16 +103,17 @@ export function addToCart(bookId) {
 
 // Remove item from cart
 export function removeFromCart(bookId) {
-  const bookIndex = cart.findIndex(item => item.bookId === bookId);
+  const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+  const bookIndex = currentCart.findIndex(item => item.bookId === bookId);
   
   if (bookIndex !== -1) {
-    if (cart[bookIndex].quantity > 1) {
-      cart[bookIndex].quantity -= 1;
+    if (currentCart[bookIndex].quantity > 1) {
+      currentCart[bookIndex].quantity -= 1;
     } else {
-      cart.splice(bookIndex, 1);
+      currentCart.splice(bookIndex, 1);
     }
     
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cart', JSON.stringify(currentCart));
     updateCartCount();
     
     // Update cart overlay if it's open
@@ -68,23 +131,24 @@ export function removeFromCart(bookId) {
 // Replace your generateCartHTML function with this debug version
 export async function generateCartHTML() {
   console.log('=== DEBUG: generateCartHTML called ===');
-  console.log('Cart contents:', cart);
+  const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+  console.log('Cart contents:', currentCart);
   
-  if (cart.length === 0) {
+  if (currentCart.length === 0) {
     console.log('Cart is empty');
     return `<div class="empty-cart-message">Seu carrinho está vazio</div>`;
   }
   
   try {
     console.log('Fetching from: /books/get-cart-books/');
-    console.log('Sending cart data:', JSON.stringify({ cart: cart }));
+    console.log('Sending cart data:', JSON.stringify({ cart: currentCart }));
     
     const response = await fetch('/books/get-cart-books/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ cart: cart })
+      body: JSON.stringify({ cart: currentCart })
     });
     
     console.log('Response status:', response.status);
@@ -143,7 +207,7 @@ export async function generateCartHTML() {
   // Fallback to original display
   let cartHTML = '<ul class="cart-items">';
   
-  cart.forEach(item => {
+  currentCart.forEach(item => {
     cartHTML += `
       <li class="cart-item" data-book-id="${item.bookId}">
         <div class="cart-item-info">
@@ -268,30 +332,6 @@ async function updateCartDisplay() {
   }
 }
 
-// Show notification
-function showNotification(message) {
-  // Create notification element
-  const notification = document.createElement('div');
-  notification.className = 'cart-notification';
-  notification.textContent = message;
-  
-  // Add to body
-  document.body.appendChild(notification);
-  
-  // Show with animation
-  setTimeout(() => {
-    notification.classList.add('show');
-  }, 10);
-  
-  // Hide after 3 seconds
-  setTimeout(() => {
-    notification.classList.remove('show');
-    setTimeout(() => {
-      notification.remove();
-    }, 300);
-  }, 3000);
-}
-
 // Initialize cart on page load
 document.addEventListener('DOMContentLoaded', function() {
   updateCartCount();
@@ -307,7 +347,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Add event listeners for add to cart buttons
   document.querySelectorAll('.js-add-to-cart').forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
       const bookId = button.dataset.bookId;
       addToCart(bookId);
     });
