@@ -3,6 +3,162 @@
 
 {% block extra_css %}
 <style>
+  
+
+  
+  /* Compact literary quote styling */
+  .quote-container {
+    text-align: center;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .literary-quote {
+    margin: 0;
+  }
+
+  .quote-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #8b5e3b;
+    font-style: italic;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .quote-author {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .quote-container {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .quote-text {
+      font-size: 1.2rem;
+    }
+    
+    .quote-author {
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .quote-text {
+      font-size: 1rem;
+    }
+  }
+
+  .intro-text-container {
+    background: linear-gradient(135deg, #8b5e3b 0%, #6b4423 100%);
+    border-radius: 0;
+    box-shadow: 0 20px 60px rgba(139, 94, 59, 0.4);
+    padding: 4rem 3rem;
+    margin-bottom: 4rem;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .intro-text-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: shimmer 8s infinite linear;
+  }
+
+  @keyframes shimmer {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .intro-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    line-height: 1.8;
+    color: #f8f6f0;
+    text-align: center;
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+    font-style: italic;
+  }
+
+  .intro-text::before {
+    content: '"';
+    font-size: 4rem;
+    position: absolute;
+    left: -2rem;
+    top: -1rem;
+    color: rgba(255,255,255,0.2);
+    font-family: 'Cinzel', serif;
+  }
+
+  .intro-text::after {
+    content: '"';
+    font-size: 4rem;
+    position: absolute;
+    right: -2rem;
+    bottom: -2rem;
+    color: rgba(255,255,255,0.2);
+    font-family: 'Cinzel', serif;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .intro-text-container {
+      padding: 3rem 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .intro-text {
+      font-size: 1.3rem;
+      line-height: 1.6;
+    }
+    
+    .intro-text::before,
+    .intro-text::after {
+      font-size: 3rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .intro-text-container {
+      padding: 2.5rem 1.5rem;
+    }
+    
+    .intro-text {
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .intro-text::before {
+      left: -1rem;
+    }
+    
+    .intro-text::after {
+      right: -1rem;
+    }
+  }
+  
   .home-container {
     background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
     min-height: 100vh;
@@ -377,6 +533,13 @@
 {% block content %}
 <div class="home-container">
   <div class="container-fluid px-4 py-4">
+
+    <div class="quote-container">
+      <blockquote class="literary-quote">
+        <span class="quote-text">"Mudam-se os tempos, mudam-se as vontades."</span>
+        <cite class="quote-author">— Luís de Camões</cite>
+      </blockquote>
+    </div>
     
     <!-- Hero Carousel -->
     <div class="hero-carousel">
@@ -384,27 +547,36 @@
         <div class="carousel-inner">
           <!-- Os Lusíadas Slide -->
           <div class="carousel-item active">
-            <img src="{% static 'images/banner1.jpg' %}" alt="Os Lusíadas">
+            <a href="{% url 'category_books' 3%}">
+              <img src="{% static 'images/banner1.jpg' %}" alt="Literatura Clássica">
+            </a>
             <div class="carousel-overlay">
-              <h3 class="carousel-title">Os Lusíadas</h3>
-              <p class="carousel-author">Luís de Camões</p>
+              <h3 class="carousel-title">Literatura Clássica Portuguesa</h3>
+              <p class="carousel-author">Consulte o nosso catálogo de literatura clássica</p>
             </div>
           </div>
+
           
           <!-- Mensagem Slide -->
           <div class="carousel-item">
-            <img src="{% static 'images/banner2.jpg' %}" alt="Mensagem">
+            <a href="{% url 'category_books' 5%}">
+              <img src="{% static 'images/banner2.jpg' %}" alt="Mensagem">
+            </a>
             <div class="carousel-overlay">
-              <h3 class="carousel-title">Mensagem</h3>
-              <p class="carousel-author">Fernando Pessoa</p>
+              
+              <h3 class="carousel-title">Clássicos do Teatro Português</h3>
+              
+              <p class="carousel-author">Explore as obras de teatro disponíveis</p>
             </div>
           </div>
           
           <!-- Os Maias Slide -->
           <div class="carousel-item">
-            <img src="{% static 'images/banner3.jpg' %}" alt="Os Maias">
+            <a href="{% url 'search_books'%}?q=Eça+de+Queirós">
+              <img src="{% static 'images/banner3.jpg' %}" alt="Os Maias">
+            </a>
             <div class="carousel-overlay">
-              <h3 class="carousel-title">Os Maias</h3>
+              <h3 class="carousel-title">Seleção Exclusiva</h3>
               <p class="carousel-author">Eça de Queirós</p>
             </div>
           </div>
@@ -418,7 +590,11 @@
         </button>
       </div>
     </div>
-
+    <div class="intro-text-container">
+      <p class="intro-text">
+        A Livraria Lusitana oferece acesso a primeiras edições e edições de coleção de obras que atravessam toda a história da literatura portuguesa — desde os seus primórdios, em 1140, até à produção contemporânea.
+      </p>
+    </div>
     <!-- Featured Books Section -->
     <div class="section-container">
       <h2 class="section-title">
