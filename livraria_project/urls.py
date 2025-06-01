@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .admin import admin_site
 from dashboard.views import dashboard_home
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin_site.urls),
@@ -14,6 +15,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('users/', include('users.urls')),
     path('contato/', include('contact.urls')),
+    path('sobre/', TemplateView.as_view(template_name='about.html'), name='about'),
     # We'll add more URLs later
 ]
 

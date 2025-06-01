@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+
+{% block title %}Sobre Nós - Livraria Lusitana{% endblock %}
+
+{% block extra_css %}
+<style>
+  .about-container {
+    background: linear-gradient(135deg, #f5f2e9 0%, #e8dcc8 100%);
+    min-height: 100vh;
+    padding: 3rem 0;
+  }
+  
+  .about-container .container {
+    max-width: 1200px;
+  }
+  
+  .about-header {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(139, 94, 59, 0.2);
+    padding: 4rem 3rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .about-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #8b5e3b 0%, #d4af37 50%, #8b5e3b 100%);
+  }
+  
+  .about-title {
+    color: #8b5e3b;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .about-subtitle {
+    color: #6c757d;
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+  }
+  
+  .about-icon {
+    font-size: 4rem;
+    color: #8b5e3b;
+    margin-bottom: 2rem;
+  }
+  
+  .about-content {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(139, 94, 59, 0.2);
+    padding: 4rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .about-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #8b5e3b 0%, #d4af37 50%, #8b5e3b 100%);
+  }
+  
+  .about-text {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: justify;
+  }
+  
+  .about-text:last-child {
+    margin-bottom: 0;
+  }
+  
+  .highlight {
+    color: #8b5e3b;
+    font-weight: 700;
+    font-family: 'Libre Baskerville', serif;
+  }
+  
+  .mission-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: 3rem 0;
+    border-left: 6px solid #8b5e3b;
+    box-shadow: 0 10px 30px rgba(139, 94, 59, 0.1);
+  }
+  
+  .mission-title {
+    color: #8b5e3b;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .mission-title i {
+    margin-right: 1rem;
+    font-size: 1.8rem;
+  }
+  
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .value-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(139, 94, 59, 0.15);
+    transition: all 0.3s ease;
+    border-top: 4px solid #8b5e3b;
+  }
+  
+  .value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(139, 94, 59, 0.25);
+  }
+  
+  .value-icon {
+    font-size: 3rem;
+    color: #8b5e3b;
+    margin-bottom: 1.5rem;
+  }
+  
+  .value-title {
+    color: #8b5e3b;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .value-text {
+    color: #6c757d;
+    font-family: 'Crimson Text', serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  .quote-section {
+    background: linear-gradient(135deg, #8b5e3b 0%, #6b4423 100%);
+    color: white;
+    border-radius: 25px;
+    padding: 3rem;
+    text-align: center;
+    margin: 3rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .quote-section::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8rem;
+    font-family: 'Cinzel', serif;
+    opacity: 0.2;
+  }
+  
+  .quote-text {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .about-header,
+    .about-content {
+      padding: 2.5rem 2rem;
+    }
+    
+    .about-title {
+      font-size: 2.5rem;
+    }
+    
+    .about-subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .about-text {
+      font-size: 1.1rem;
+      text-align: left;
+    }
+    
+    .mission-section {
+      padding: 2rem;
+    }
+    
+    .value-card {
+      padding: 2rem;
+    }
+    
+    .quote-section {
+      padding: 2rem;
+    }
+    
+    .quote-text {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="about-header">
+      <div class="about-icon">
+        <i class="bi bi-book-half"></i>
+      </div>
+      <h1 class="about-title">Sobre Nós</h1>
+      <p class="about-subtitle">Descobra a história e missão da Livraria Lusitana</p>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="about-content">
+      <p class="about-text">
+        <span class="highlight">Livraria Lusitana</span> é uma livraria online inteiramente dedicada à literatura portuguesa. O nosso objetivo é simples mas ambicioso: reunir, num só lugar, o maior acervo disponível de títulos da literatura nacional — desde clássicos incontornáveis até obras contemporâneas menos conhecidas.
+      </p>
+      
+      <p class="about-text">
+        Acreditamos que o acesso à produção literária portuguesa deve ser fácil, centralizado e acessível a todos, especialmente a estudantes, investigadores, professores e apaixonados pela nossa cultura. Por isso, criámos esta plataforma para facilitar a descoberta, comparação e aquisição de livros portugueses, tanto novos como usados.
+      </p>
+      
+      <p class="about-text">
+        Reunimos obras de diversos períodos, géneros e autores, com o intuito de apoiar o estudo e a investigação académica da literatura portuguesa. Seja para uma tese universitária, um trabalho escolar ou simplesmente por gosto pessoal, encontrará aqui uma seleção abrangente e cuidadosamente organizada.
+      </p>
+      
+      <div class="quote-section">
+        <p class="quote-text">
+          A Livraria Lusitana é mais do que uma loja — é um ponto de encontro entre leitores e a riqueza da escrita em português.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Mission Section -->
+    <div class="mission-section">
+      <h3 class="mission-title">
+        <i class="bi bi-target"></i>
+        A Nossa Missão
+      </h3>
+      <p class="about-text">
+        Democratizar o acesso à literatura portuguesa, criando uma ponte entre autores, editoras e leitores. Queremos ser o destino preferencial para quem procura qualidade, variedade e conhecimento especializado sobre a produção literária nacional.
+      </p>
+    </div>
+    
+    <!-- Values Grid -->
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">
+          <i class="bi bi-heart-fill"></i>
+        </div>
+        <h4 class="value-title">Paixão pela Literatura</h4>
+        <p class="value-text">
+          Cada livro na nossa plataforma é selecionado com cuidado e amor pela literatura portuguesa.
+        </p>
+      </div>
+      
+      <div class="value-card">
+        <div class="value-icon">
+          <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <h4 class="value-title">Apoio Académico</h4>
+        <p class="value-text">
+          Facilitamos o acesso a recursos essenciais para estudantes e investigadores da língua portuguesa.
+        </p>
+      </div>
+      
+      <div class="value-card">
+        <div class="value-icon">
+          <i class="bi bi-globe"></i>
+        </div>
+        <h4 class="value-title">Alcance Global</h4>
+        <p class="value-text">
+          Levamos a literatura portuguesa a qualquer parte do mundo, conectando culturas através dos livros.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
