@@ -603,13 +603,14 @@
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
       sortSelect.addEventListener('change', function() {
-        const form = document.getElementById('filter-form');
-        const sortInput = document.createElement('input');
-        sortInput.type = 'hidden';
-        sortInput.name = 'sort';
-        sortInput.value = this.value;
-        form.appendChild(sortInput);
-        form.submit();
+        const sortValue = this.value;
+        const currentUrl = new URL(window.location);
+        
+        // Set the sort parameter
+        currentUrl.searchParams.set('sort', sortValue);
+        
+        // Redirect to the new URL
+        window.location.href = currentUrl.toString();
       });
     }
   });
