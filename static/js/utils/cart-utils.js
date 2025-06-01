@@ -136,7 +136,7 @@ export async function generateCartHTML() {
   
   if (currentCart.length === 0) {
     console.log('Cart is empty');
-    return `<div class="empty-cart-message">Seu carrinho está vazio</div>`;
+    return `<div class="empty-cart-message">O carrinho está vazio</div>`;
   }
   
   try {
@@ -253,7 +253,7 @@ export async function showCartOverlay() {
   overlay.innerHTML = `
     <div class="cart-overlay-content">
       <div class="cart-overlay-header">
-        <h5>Seu Carrinho</h5>
+        <h5>Carrinho</h5>
         <button class="btn-close js-close-cart"></button>
       </div>
       <div class="cart-overlay-body">

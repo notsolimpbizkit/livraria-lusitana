@@ -22,11 +22,30 @@ def register(request):
 
 @login_required
 def profile(request):
-    return render(request, 'users/profile.html')
+    # Calculate stats for the profile page
+    total_orders = request.user.orders.count() if hasattr(request.user, 'orders') else 0
+    total_favorites = request.user.wishlist_items.count()
+    
+    # Get reviews count from books app
+    try:
+        from books.models import Review
+        total_reviews = Review.objects.filter(user=request.user).count()
+    except ImportError:
+        # If Review model doesn't exist in books app, set to 0
+        total_reviews = 0
+    
+    context = {
+        'total_orders': total_orders,
+        'total_favorites': total_favorites,
+        'total_reviews': total_reviews,
+    }
+    
+    return render(request, 'users/profile.html', context)
 
 @login_required
 def orders(request):
-    return render(request, 'users/orders.html')
+    user_orders = request.user.orders.all().order_by('-order_date') if hasattr(request.user, 'orders') else []
+    return render(request, 'users/orders.html', {'orders': user_orders})
 
 @login_required
 def wishlist(request):

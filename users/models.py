@@ -1,3 +1,4 @@
+# users/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -34,3 +35,5 @@ class Wishlist(models.Model):
         
     def __str__(self):
         return f"{self.user.username}'s wishlist: {self.book.title}"
+
+# Note: We're using the Review model from the books app instead of creating a duplicate here
