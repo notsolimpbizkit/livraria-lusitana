@@ -1,16 +1,13 @@
-// File path: static/js/book.js
-document.addEventListener('DOMContentLoaded', function() {
-    // Note: In Django, we don't need to fetch the book data via JavaScript
-    // as it's already rendered in the template. We just need to handle interactions.
 
-    // Handle add to cart button click
+document.addEventListener('DOMContentLoaded', function() {
+    
     const addToCartButton = document.querySelector('.js-add-to-cart');
     if (addToCartButton) {
         addToCartButton.addEventListener('click', () => {
             const bookId = addToCartButton.dataset.bookId;
             addToCart(bookId);
             
-            // Show a confirmation message
+            
             showNotification("Livro adicionado ao carrinho");
         });
     }
@@ -21,16 +18,16 @@ document.addEventListener('DOMContentLoaded', function() {
         reviewForm.addEventListener('submit', function(event) {
             event.preventDefault();
             
-            // Get the form data
+            
             const formData = new FormData(this);
             
-            // Send the review
+            
             fetch(this.action, {
                 method: 'POST',
                 body: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    // The CSRF token is already included in the FormData
+                    
                 }
             })
             .then(response => response.json())

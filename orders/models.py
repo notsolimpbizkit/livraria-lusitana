@@ -4,11 +4,11 @@ from books.models import Book
 
 class Order(models.Model):
     STATUS_CHOICES = (
-        ('pending', 'Pending'),
-        ('processing', 'Processing'),
-        ('shipped', 'Shipped'),
-        ('delivered', 'Delivered'),
-        ('cancelled', 'Cancelled'),
+        ('pendente', 'Pendente'),
+        ('processamento', 'Processamento'),
+        ('enviado', 'Enviado'),
+        ('entregue', 'Entregue'),
+        ('cancelado', 'Cancelado'),
     )
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')

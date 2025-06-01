@@ -36,4 +36,3 @@ class Wishlist(models.Model):
     def __str__(self):
         return f"{self.user.username}'s wishlist: {self.book.title}"
 
-# Note: We're using the Review model from the books app instead of creating a duplicate here

@@ -1,7 +1,6 @@
-// File path: static/js/main.js
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Import cart utilities - we'll handle this differently in Django
-    // The cart utilities are imported via the base template
+    
 
     // Add to cart functionality
     document.querySelectorAll('.js-add-to-cart').forEach((button) => {
@@ -24,16 +23,16 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartCount();
 });
 
-// These functions will be available from cart-utils.js which is loaded in the base template
+
 // We're just declaring them here for reference
 function addToCart(bookId) {
-    // This is implemented in cart-utils.js
+    //cart-utils.js
 }
 
 function showCartOverlay() {
-    // This is implemented in cart-utils.js
+    //cart-utils.js
 }
 
 function updateCartCount() {
-    // This is implemented in cart-utils.js
+    //cart-utils.js
 }

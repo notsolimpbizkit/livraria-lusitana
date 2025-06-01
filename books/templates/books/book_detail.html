@@ -450,7 +450,7 @@
     color: #6c757d;
   }
   
-  /* Related books grid - FIXED VERSION */
+  /* 2a versao */
   .related-books-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -505,7 +505,7 @@
 {% block content %}
 <div class="book-detail-container">
   <div class="container">
-    <!-- Breadcrumb Navigation -->
+    <!-- Breadcrumb     -->
     <div class="breadcrumb-nav">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -531,7 +531,7 @@
             {% endif %}
           </div>
           
-          <!-- Stock information -->
+          <!-- Gestao de stock -->
           {% if book.stock > 10 %}
             <div class="stock-info stock-success">
               <i class="bi bi-check-circle-fill me-2"></i>Em Stock
@@ -566,7 +566,7 @@
           <h1 class="book-title">{{ book.title }}</h1>
           <p class="book-author">por <strong>{{ book.author }}</strong></p>
           
-          <!-- Rating display -->
+          <!-- Rating   -->
           <div class="rating-display">
             <div class="rating-stars">
               {% if book.avg_rating and book.avg_rating > 0 %}
@@ -614,7 +614,7 @@
           
           <div class="book-price">{{ book.formatted_price }}</div>
           
-          <!-- Synopsis -->
+          <!-- Sinopse -->
           <div class="synopsis-section">
             <h3 class="synopsis-title"><i class="bi bi-book me-2"></i>Sinopse</h3>
             <p class="synopsis-text">{{ book.synopsis }}</p>
@@ -674,7 +674,7 @@
       </div>
     </div>
     
-    <!-- Reviews section -->
+    <!-- Reviews -->
     <div class="reviews-section">
       <h3 class="reviews-title">
         <i class="bi bi-chat-left-text me-3"></i>Avaliações e Comentários
@@ -725,7 +725,7 @@
         </div>
       {% endif %}
       
-      <!-- Display existing reviews -->
+      <!-- review dispçlay -->
       {% if reviews %}
         <h5 class="mt-4 mb-3" style="color: #8b5e3b; font-weight: 700;">
           <i class="bi bi-chat-square-text me-2"></i>{{ reviews.count }} Avaliações
@@ -756,7 +756,7 @@
       {% endif %}
     </div>
     
-    <!-- Related books section -->
+    <!-- Related books -->
     {% if related_books %}
     <div class="related-books-section">
       <h3 class="related-books-title">

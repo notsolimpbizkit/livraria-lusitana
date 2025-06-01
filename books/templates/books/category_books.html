@@ -293,7 +293,7 @@
     text-decoration: none;
   }
   
-  /* Responsive adjustments */
+  /* Responsividade */
   @media (max-width: 1400px) {
     .books-grid {
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -441,7 +441,7 @@
               <p class="book-author">{{ book.author }}</p>
               <p class="book-price">{{ book.formatted_price }}</p>
               
-              <!-- Rating display -->
+              <!-- Rating -->
               <div class="book-rating">
                 <div class="rating-stars">
                   {% if book.avg_rating and book.avg_rating > 0 %}
@@ -512,7 +512,7 @@
 <script type="module" src="{% static 'js/utils/cart-utils.js' %}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Handle sort select change
+    // sort select change
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
       sortSelect.addEventListener('change', function() {

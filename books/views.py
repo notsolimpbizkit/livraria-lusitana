@@ -204,7 +204,7 @@ def search_books(request):
             Q(isbn__icontains=query)
         ).annotate(avg_rating=Avg('reviews__rating'))
         
-        # If no results, get some random books to suggest
+        # If no results, go randomt
         if not books:
             random_books = Book.objects.order_by('?')[:4]
     

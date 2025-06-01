@@ -1,6 +1,6 @@
-// File path: static/js/utils/cart-utils.js 
+// File path: static/js/utils/cart-utils.js //
 
-// Format price from cents to currency
+// Format price from cents to eur
 export function formatPrice(priceCents) {
   return (priceCents / 100).toLocaleString('pt-PT', {
     style: 'currency',
@@ -8,7 +8,7 @@ export function formatPrice(priceCents) {
   });
 }
 
-// Update cart count in the UI - FIXED to read from localStorage
+// Update cart count in the UI - agora le da localStorage
 export function updateCartCount() {
   const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
   const cartCount = currentCart.reduce((acc, item) => acc + item.quantity, 0);
@@ -18,14 +18,14 @@ export function updateCartCount() {
   });
 }
 
-// Show notification function - FIXED to wait for notification system
+// Show notification function - wiats for notification system
 function showNotification(message) {
-  // Wait for the notification system to be ready
+  // wait for the notification system to be ready
   const showNotificationWhenReady = () => {
     if (window.cartNotifications) {
       window.cartNotifications.show('Adicionado ao carrinho', message, 3000);
     } else {
-      // If still not ready after 50ms, try again (max 10 attempts = 500ms total)
+      // If still not ready after 50ms, try again
       if (showNotificationWhenReady.attempts < 10) {
         showNotificationWhenReady.attempts = (showNotificationWhenReady.attempts || 0) + 1;
         setTimeout(showNotificationWhenReady, 50);
@@ -55,12 +55,12 @@ function showNotification(message) {
         
         document.body.appendChild(notification);
         
-        // Show animation
+        // animação
         setTimeout(() => {
           notification.style.transform = 'translateX(0)';
         }, 10);
         
-        // Hide after 3 seconds
+        // timeout 3 secs
         setTimeout(() => {
           notification.style.transform = 'translateX(100%)';
           setTimeout(() => {
@@ -77,11 +77,11 @@ function showNotification(message) {
   showNotificationWhenReady();
 }
 
-// Add item to cart
+// Add to cart
 export function addToCart(bookId) {
   console.log('Adding to cart:', bookId);
   
-  // Get current cart from localStorage to avoid stale data
+  // Get current cart from localStorage to avoid dead data
   const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
   let matchingBook = currentCart.find(item => item.bookId === bookId);
   
@@ -128,7 +128,7 @@ export function removeFromCart(bookId) {
   return false;
 }
 
-// Replace your generateCartHTML function with this debug version
+// debug version, of wrongful cart generation, AUTALIZAR ANTES DE PRODUÇÃO
 export async function generateCartHTML() {
   console.log('=== DEBUG: generateCartHTML called ===');
   const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Add event listeners for add to cart buttons
+  // event listeners for add to cart buttons
   document.querySelectorAll('.js-add-to-cart').forEach(button => {
     button.addEventListener('click', (e) => {
       e.preventDefault();
