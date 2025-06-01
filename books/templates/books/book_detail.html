@@ -518,15 +518,15 @@
           <!-- Stock information -->
           {% if book.stock > 10 %}
             <div class="stock-info stock-success">
-              <i class="bi bi-check-circle-fill me-2"></i>Em Estoque
+              <i class="bi bi-check-circle-fill me-2"></i>Em Stock
             </div>
           {% elif book.stock > 0 %}
             <div class="stock-info stock-warning">
-              <i class="bi bi-exclamation-triangle-fill me-2"></i>Apenas {{ book.stock }} unidades restantes
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>Apenas {{ book.stock }} unidade(s) restantes
             </div>
           {% else %}
             <div class="stock-info stock-danger">
-              <i class="bi bi-x-circle-fill me-2"></i>Fora de Estoque
+              <i class="bi bi-x-circle-fill me-2"></i>Esgotado
             </div>
           {% endif %}
           
@@ -592,7 +592,7 @@
               {% if book.avg_rating and book.avg_rating > 0 %}
                 {{ book.avg_rating|floatformat:1 }} de 5 estrelas ({{ book.reviews.count }} avaliações)
               {% else %}
-                Sem avaliações ainda
+                Sem avaliações
               {% endif %}
             </div>
           </div>
@@ -667,27 +667,27 @@
       
       {% if user.is_authenticated %}
         <div class="review-form">
-          <h5>{% if user_review %}Editar sua avaliação{% else %}Deixe sua avaliação{% endif %}</h5>
+          <h5>{% if user_review %}Editar a sua avaliação{% else %}Deixe a sua avaliação{% endif %}</h5>
           <form method="post" action="{% url 'add_review' book.id %}">
             {% csrf_token %}
             
             <div class="mb-3">
               <label for="rating" class="form-label">
-                <i class="bi bi-star me-2"></i>Sua avaliação
+                <i class="bi bi-star me-2"></i>A sua avaliação
               </label>
               <select class="form-select" name="rating" id="rating" required>
                 <option value="">Selecione uma avaliação</option>
                 <option value="5" {% if user_review and user_review.rating == 5 %}selected{% endif %}>★★★★★ Excelente (5/5)</option>
                 <option value="4" {% if user_review and user_review.rating == 4 %}selected{% endif %}>★★★★☆ Muito Bom (4/5)</option>
                 <option value="3" {% if user_review and user_review.rating == 3 %}selected{% endif %}>★★★☆☆ Bom (3/5)</option>
-                <option value="2" {% if user_review and user_review.rating == 2 %}selected{% endif %}>★★☆☆☆ Regular (2/5)</option>
-                <option value="1" {% if user_review and user_review.rating == 1 %}selected{% endif %}>★☆☆☆☆ Ruim (1/5)</option>
+                <option value="2" {% if user_review and user_review.rating == 2 %}selected{% endif %}>★★☆☆☆ Mau (2/5)</option>
+                <option value="1" {% if user_review and user_review.rating == 1 %}selected{% endif %}>★☆☆☆☆ Terrível (1/5)</option>
               </select>
             </div>
             
             <div class="mb-3">
               <label for="review_text" class="form-label">
-                <i class="bi bi-pencil me-2"></i>Seu comentário
+                <i class="bi bi-pencil me-2"></i>O seu comentário
               </label>
               <textarea class="form-control" name="review_text" id="review_text" rows="4" required placeholder="Compartilhe sua opinião sobre este livro...">{% if user_review %}{{ user_review.review_text }}{% endif %}</textarea>
             </div>

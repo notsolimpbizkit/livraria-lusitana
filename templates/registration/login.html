@@ -178,7 +178,7 @@
           <div class="login-header">
             <div class="brand-icon">📚</div>
             <h4>Bem-vindo de volta</h4>
-            <p>Entre na sua conta para continuar</p>
+            <p>Faça log-in para continuar</p>
           </div>
           <div class="login-body">
             <form method="post">
@@ -187,13 +187,13 @@
               {% if form.errors %}
               <div class="alert alert-danger">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                Seu nome de usuário e senha não correspondem. Por favor, tente novamente.
+                O nome de utilizador e a palavra-passe não correspondem. Por favor, verifique os dados e tente novamente.
               </div>
               {% endif %}
               
               <div class="form-group">
                 <label for="id_username" class="form-label">
-                  <i class="bi bi-person-fill me-2"></i>Nome de Usuário
+                  <i class="bi bi-person-fill me-2"></i>Nome de utlizador
                 </label>
                 <input type="text" 
                        name="username" 
@@ -205,7 +205,7 @@
               
               <div class="form-group">
                 <label for="id_password" class="form-label">
-                  <i class="bi bi-lock-fill me-2"></i>Senha
+                  <i class="bi bi-lock-fill me-2"></i>Palavra-passe
                 </label>
                 <input type="password" 
                        name="password" 
@@ -223,7 +223,7 @@
                 <p class="mb-0">
                   Não tem uma conta? 
                   <a href="{% url 'register' %}">
-                    <i class="bi bi-person-plus me-1"></i>Cadastre-se agora
+                    <i class="bi bi-person-plus me-1"></i>Registe-se aqui
                   </a>
                 </p>
               </div>

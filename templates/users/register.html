@@ -242,7 +242,7 @@
         <div class="card register-card">
           <div class="register-header">
             <div class="brand-icon">📚</div>
-            <h4>Criar Nova Conta</h4>
+            <h4>Criar uma Conta</h4>
             <p>Junte-se à nossa comunidade de leitores</p>
           </div>
           <div class="register-body">
@@ -269,7 +269,7 @@
               
               <div class="form-group">
                 <label for="id_username" class="form-label">
-                  <i class="bi bi-person-fill me-2"></i>Nome de Usuário
+                  <i class="bi bi-person-fill me-2"></i>Nome de Utilizador
                 </label>
                 <input type="text" 
                        name="username" 
@@ -312,14 +312,14 @@
               
               <div class="form-group">
                 <label for="id_password1" class="form-label">
-                  <i class="bi bi-lock-fill me-2"></i>Senha
+                  <i class="bi bi-lock-fill me-2"></i>Palavra-passe
                 </label>
                 <input type="password" 
                        name="password1" 
                        id="id_password1" 
                        class="form-control" 
                        required 
-                       placeholder="Digite uma senha segura">
+                       placeholder="Digite uma palavra-passe segura">
                 {% if form.password1.errors %}
                   <div class="field-errors">
                     <ul>
@@ -330,11 +330,11 @@
                   </div>
                 {% endif %}
                 <div class="password-requirements">
-                  <i class="bi bi-info-circle me-2"></i><strong>Requisitos da senha:</strong>
+                  <i class="bi bi-info-circle me-2"></i><strong>Requisitos da palavra-passe:</strong>
                   <ul>
                     <li>Pelo menos 8 caracteres</li>
                     <li>Não pode ser muito comum (como "password123")</li>
-                    <li>Não pode ser muito similar ao seu nome de usuário</li>
+                    <li>Não pode ser semelhante ao seu nome de utilizador</li>
                     <li>Não pode ser inteiramente numérica</li>
                   </ul>
                 </div>
@@ -342,14 +342,14 @@
               
               <div class="form-group">
                 <label for="id_password2" class="form-label">
-                  <i class="bi bi-shield-check me-2"></i>Confirmar Senha
+                  <i class="bi bi-shield-check me-2"></i>Confirmar Palavra-Passe
                 </label>
                 <input type="password" 
                        name="password2" 
                        id="id_password2" 
                        class="form-control" 
                        required 
-                       placeholder="Digite a senha novamente">
+                       placeholder="Digite a palavra-passe novamente">
                 {% if form.password2.errors %}
                   <div class="field-errors">
                     <ul>
