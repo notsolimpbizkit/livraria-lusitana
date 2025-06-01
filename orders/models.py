@@ -24,7 +24,9 @@ class Order(models.Model):
         return f"Order {self.id} by {self.user.username} on {self.order_date.strftime('%Y-%m-%d')}"
     
     def formatted_total(self):
-        return f"€{self.total_amount_cents/100:.2f}"
+        if self.total_amount_cents is not None:
+            return f"€{self.total_amount_cents/100:.2f}"
+        return "€0.00"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
@@ -36,10 +38,15 @@ class OrderItem(models.Model):
         return f"{self.quantity}x {self.book.title} in Order {self.order.id}"
     
     def line_total_cents(self):
-        return self.quantity * self.price_at_order_cents
+        if self.price_at_order_cents is not None:
+            return self.quantity * self.price_at_order_cents
+        return 0
         
     def formatted_price(self):
-        return f"€{self.price_at_order_cents/100:.2f}"
+        if self.price_at_order_cents is not None:
+            return f"€{self.price_at_order_cents/100:.2f}"
+        return "€0.00"
         
     def formatted_line_total(self):
-        return f"€{self.line_total_cents()/100:.2f}"
+        line_total = self.line_total_cents()
+        return f"€{line_total/100:.2f}"
