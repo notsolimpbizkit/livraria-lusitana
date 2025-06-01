@@ -330,6 +330,8 @@
     transition: all 0.3s ease;
     overflow: hidden;
     height: 100%;
+    max-width: 300px;
+    justify-self: start;
   }
   
   .related-book-card:hover {
@@ -448,24 +450,33 @@
     color: #6c757d;
   }
   
-  /* Related books grid responsive */
+  /* Related books grid - FIXED VERSION */
   .related-books-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 2rem;
+    max-width: 100%;
   }
   
   @media (max-width: 1200px) {
     .related-books-grid {
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 1.5rem;
+    }
+    
+    .related-book-card {
+      max-width: 280px;
     }
   }
   
   @media (max-width: 768px) {
     .related-books-grid {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
+    }
+    
+    .related-book-card {
+      max-width: 250px;
     }
     
     .related-book-cover {
@@ -480,7 +491,12 @@
   
   @media (max-width: 576px) {
     .related-books-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      justify-content: center;
+    }
+    
+    .related-book-card {
+      max-width: 320px;
     }
   }
 </style>
@@ -553,7 +569,6 @@
           <!-- Rating display -->
           <div class="rating-display">
             <div class="rating-stars">
-              <!-- Your fixed star rating code goes here -->
               {% if book.avg_rating and book.avg_rating > 0 %}
                 {% if book.avg_rating >= 1 %}
                   <i class="bi bi-star-fill text-warning"></i>
