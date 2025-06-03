@@ -131,3 +131,49 @@ def logout(request):
         return redirect('home')
     
     return redirect('home')
+
+@csrf_exempt
+def subscribe_newsletter(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email', '').strip().lower()
+            
+            if not email:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Por favor, insira um email válido.'
+                })
+            
+            from .models import NewsletterSubscription
+            
+            # Check if email already exists
+            if NewsletterSubscription.objects.filter(email=email).exists():
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Este email já está inscrito na nossa newsletter.'
+                })
+            
+            # Create subscription
+            NewsletterSubscription.objects.create(email=email)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Obrigado! Você foi inscrito na nossa newsletter com sucesso.'
+            })
+            
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'message': 'Dados inválidos.'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': 'Erro interno. Tente novamente.'
+            })
+    
+    return JsonResponse({
+        'success': False,
+        'message': 'Método não permitido.'
+    })

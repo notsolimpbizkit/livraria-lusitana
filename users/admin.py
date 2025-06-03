@@ -1,6 +1,6 @@
 # users/admin.py
 from django.contrib import admin
-from .models import UserProfile, Wishlist
+from .models import UserProfile, Wishlist, NewsletterSubscription
 from livraria_project.admin import admin_site
 
 class UserProfileAdmin(admin.ModelAdmin):
@@ -35,5 +35,26 @@ class WishlistAdmin(admin.ModelAdmin):
     get_user_email.short_description = 'Email do Usuário'
     get_user_email.admin_order_field = 'user__email'
 
+
+class NewsletterSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('email', 'subscribed_date', 'is_active')
+    list_filter = ('is_active', 'subscribed_date')
+    search_fields = ('email',)
+    readonly_fields = ('subscribed_date',)
+    ordering = ('-subscribed_date',)
+    
+    actions = ['activate_subscriptions', 'deactivate_subscriptions']
+    
+    def activate_subscriptions(self, request, queryset):
+        updated = queryset.update(is_active=True)
+        self.message_user(request, f'{updated} inscrições ativadas.')
+    activate_subscriptions.short_description = "Ativar inscrições selecionadas"
+    
+    def deactivate_subscriptions(self, request, queryset):
+        updated = queryset.update(is_active=False)
+        self.message_user(request, f'{updated} inscrições desativadas.')
+    deactivate_subscriptions.short_description = "Desativar inscrições selecionadas"
+
 admin_site.register(UserProfile, UserProfileAdmin)
 admin_site.register(Wishlist, WishlistAdmin)
+admin_site.register(NewsletterSubscription, NewsletterSubscriptionAdmin)

@@ -36,3 +36,14 @@ class Wishlist(models.Model):
     def __str__(self):
         return f"{self.user.username}'s wishlist: {self.book.title}"
 
+
+class NewsletterSubscription(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_date = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['-subscribed_date']
+    
+    def __str__(self):
+        return f"{self.email} - {'Ativo' if self.is_active else 'Inativo'}"
