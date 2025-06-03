@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     preferred_language = models.CharField(max_length=10, default='pt')
     
     def __str__(self):
-        return f"{self.user.username}'s profile"
+        return f"{self.user.username}'s profile" 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
