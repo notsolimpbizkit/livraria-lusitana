@@ -4,16 +4,16 @@ from books.models import Book
 
 class Order(models.Model):
     STATUS_CHOICES = (
-        ('pendente', 'Pendente'),
-        ('processamento', 'Processamento'),
-        ('enviado', 'Enviado'),
-        ('entregue', 'Entregue'),
-        ('cancelado', 'Cancelado'),
+        ('pending', 'Pendente'),
+        ('processing', 'Processamento'),
+        ('shipped', 'Enviado'),
+        ('delivered', 'Entregue'),
+        ('cancelled', 'Cancelado'),
     )
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     order_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     total_amount_cents = models.IntegerField()
     shipping_address = models.CharField(max_length=255)
     shipping_city = models.CharField(max_length=100)
